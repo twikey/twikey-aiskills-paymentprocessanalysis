@@ -1,0 +1,7 @@
+# Answers and reports stay on the user's computer, never in git.
+twikey-payment-hours*.json
+twikey-payment-hours-report.md
+__pycache__/
+*.pyc
+.DS_Store
+.idea/

@@ -1,0 +1,12 @@
+{
+  "name": "twikey-payment-hours",
+  "displayName": "Payment Hours",
+  "version": "0.1.0",
+  "description": "See how many hours a month your company spends on getting paid, step by step: invoicing, payment methods, matching payments, chasing late payers, failed payments, payment details, refunds and reporting. From your own answers, with every formula shown. No files needed. By Twikey.",
+  "author": {
+    "name": "Twikey",
+    "url": "https://www.twikey.com"
+  },
+  "homepage": "https://www.twikey.com",
+  "keywords": ["getting paid", "accounts receivable", "reconciliation", "dunning", "payment methods", "sepa direct debit", "finance hours", "twikey"]
+}

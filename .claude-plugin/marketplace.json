@@ -1,0 +1,16 @@
+{
+  "name": "twikey-skills",
+  "description": "Free AI skills by Twikey. Payment Hours shows how many hours a month your company spends on getting paid, step by step, from your own answers.",
+  "owner": {
+    "name": "Twikey",
+    "url": "https://www.twikey.com"
+  },
+  "plugins": [
+    {
+      "name": "twikey-payment-hours",
+      "source": "./plugins/twikey-payment-hours",
+      "description": "Hours a month spent on getting paid, step by step, from your own answers: invoicing, payment methods, matching, chasing late payers, failed payments, refunds and reporting. No files needed.",
+      "category": "finance"
+    }
+  ]
+}
