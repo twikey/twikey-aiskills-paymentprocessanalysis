@@ -466,7 +466,7 @@ def load(path):
     if not os.path.exists(path):
         return empty_ledger()
     try:
-        with open(path, encoding="utf-8") as f:
+        with open(path, encoding="utf-8-sig") as f:  # -sig: a ledger saved by a Windows editor may start with a BOM
             data = json.load(f)
     except ValueError:
         raise UserError("cannot read the ledger %s (not valid JSON)" % path)
@@ -479,7 +479,7 @@ def load(path):
 
 def save(path, data):
     tmp = path + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
+    with open(tmp, "w", encoding="utf-8", newline="\n") as f:
         json.dump(data, f, indent=2, ensure_ascii=False, sort_keys=True)
         f.write("\n")
     os.replace(tmp, path)
@@ -1242,7 +1242,17 @@ def cmd_report(led, lang, today=None):
 
 # ---------------------------------------------------------------- command line
 
+def utf8_output():
+    """Print UTF-8 whatever the console's code page (Windows cp1252, LANG=C): the output holds €, ×, ÷ and é."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8")
+        except (AttributeError, ValueError, OSError):
+            pass
+
+
 def main(argv=None):
+    utf8_output()
     ap = argparse.ArgumentParser(prog="hours.py", description="Twikey Payment Hours calculator")
     ap.add_argument("--ledger", default=LEDGER)
     ap.add_argument("--lang", choices=LANGS)
@@ -1282,13 +1292,16 @@ def main(argv=None):
         elif args.cmd == "report":
             text = cmd_report(led, lang)
             if args.out:
-                with open(args.out, "w", encoding="utf-8") as f:
+                with open(args.out, "w", encoding="utf-8", newline="\n") as f:
                     f.write(text)
                 print("report written to %s" % args.out)
             else:
                 print(text)
     except UserError as e:
         print("error: %s" % e, file=sys.stderr)
+        return 2
+    except OSError as e:
+        print("error: cannot read or write a file: %s" % e, file=sys.stderr)
         return 2
     return 0
 

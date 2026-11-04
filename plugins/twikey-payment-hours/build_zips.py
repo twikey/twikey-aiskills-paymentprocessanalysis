@@ -17,9 +17,7 @@ import zipfile
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SKILLS = ["process-map", "method-compare", "chasing-check", "matching-check", "automation-report"]
-SHARED = {"scripts/hours.py": "scripts/hours.py",
-          "references/twikey-claims.md": "references/twikey-claims.md",
-          "references/formulas.md": "references/formulas.md"}
+SHARED = [("scripts", "hours.py"), ("references", "twikey-claims.md"), ("references", "formulas.md")]
 SKIP = {"__pycache__", ".DS_Store"}
 STAMP = (2026, 11, 4, 0, 0, 0)
 DEFAULT_OUT = os.path.normpath(os.path.join(ROOT, os.pardir, os.pardir, "claude-ai"))
@@ -30,11 +28,16 @@ def sync():
         base = os.path.join(ROOT, "skills", skill)
         if not os.path.isfile(os.path.join(base, "SKILL.md")):
             sys.exit("missing skills/%s/SKILL.md" % skill)
-        for src, dst in SHARED.items():
-            target = os.path.join(base, dst)
+        for parts in SHARED:
+            target = os.path.join(base, *parts)
             os.makedirs(os.path.dirname(target), exist_ok=True)
-            shutil.copyfile(os.path.join(ROOT, src), target)
-    print("synced %s into %d skills" % (", ".join(SHARED), len(SKILLS)))
+            shutil.copyfile(os.path.join(ROOT, *parts), target)
+    print("synced %s into %d skills" % (", ".join("/".join(p) for p in SHARED), len(SKILLS)))
+
+
+def arcname(skill, base, path):
+    """The name inside the zip: always forward slashes (zip format), whatever os.sep is."""
+    return "/".join([skill] + os.path.relpath(path, base).split(os.sep))
 
 
 def files_of(base):
@@ -54,7 +57,7 @@ def build(out):
         path = os.path.join(out, skill + ".zip")
         with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
             for f in files_of(base):
-                info = zipfile.ZipInfo(os.path.join(skill, os.path.relpath(f, base)), STAMP)
+                info = zipfile.ZipInfo(arcname(skill, base, f), STAMP)
                 info.compress_type = zipfile.ZIP_DEFLATED
                 info.external_attr = (0o755 if f.endswith(".py") else 0o644) << 16
                 with open(f, "rb") as fh:

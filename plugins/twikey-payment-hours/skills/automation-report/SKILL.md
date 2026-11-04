@@ -31,7 +31,8 @@ reworded. When nothing is mapped yet, point the user to process-map first.
 
 Run the commands from the working folder, where the ledger `twikey-payment-hours.json` lives. Put every
 KEY=VALUE in single quotes, an apostrophe inside a value as ’. Where `${CLAUDE_SKILL_DIR}` is not filled in
-(claude.ai), use the folder this SKILL.md is in.
+(claude.ai), use the folder this SKILL.md is in. If `python3` is not found (Windows), run the same command with
+`py -3`, then with `python`. If none works, work it out by hand as with code execution off (below), and say so.
 
 1. Read the ledger: `python3 -B "${CLAUDE_SKILL_DIR}/scripts/hours.py" show`. The eight steps are invoice,
    collect, match, chase, failed, details, refunds, reporting. Answers given earlier in this conversation but

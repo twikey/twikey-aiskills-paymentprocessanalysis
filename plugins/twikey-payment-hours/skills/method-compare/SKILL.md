@@ -42,7 +42,9 @@ python3 -B "${CLAUDE_SKILL_DIR}/scripts/hours.py" set 'whatif=card:sdd_b2b:40'
 python3 -B "${CLAUDE_SKILL_DIR}/scripts/hours.py" unset whatif
 ```
 
-Where `${CLAUDE_SKILL_DIR}` is not filled in (claude.ai), use the folder this SKILL.md is in.
+Where `${CLAUDE_SKILL_DIR}` is not filled in (claude.ai), use the folder this SKILL.md is in. If `python3` is not
+found (Windows), run the same command with `py -3`, then with `python`. If none works, work it out by hand as
+with code execution off (below), and say so.
 
 - Single-quote every KEY=VALUE, an apostrophe inside a value as ’. Decimals take a dot, also when the user
   writes 1,4. Set a zero the user gave as 0, so the output does not list it as "not given".

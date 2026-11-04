@@ -29,8 +29,13 @@ payer ?".
 
 ### Claude Code
 
-You need Claude Code 2.1.273 or later, and Python 3.8 or later available as `python3`. On macOS, open Terminal
-and run `python3 --version` to check.
+You need Claude Code 2.1.273 or later, and Python 3.8 or later. Tested on macOS. The Windows route follows
+Claude Code's Windows setup.
+
+- **macOS:** open Terminal and run `python3 --version` to check.
+- **Windows:** install Python 3 from python.org (tick "Add python.exe to PATH" in the installer) or from the
+  Microsoft Store. Then open a terminal and check with `py --version` or `python --version`. The skills try
+  `python3`, then `py -3`, then `python`.
 
 Install it from this repository:
 
@@ -46,7 +51,9 @@ Then ask Claude: "how many hours do we spend on getting paid?"
 The five skills come as five zip files in the
 [`claude-ai` folder](https://github.com/twikey/twikey-aiskills-paymentprocessanalysis/tree/main/claude-ai):
 `process-map.zip`, `method-compare.zip`, `chasing-check.zip`, `matching-check.zip` and `automation-report.zip`.
-Download them. Skills work on the Free, Pro, Max, Ultra, Team and Enterprise plans.
+Download them. Skills work on the Free, Pro, Max, Ultra, Team and Enterprise plans. This route works on any
+computer (Windows, Mac, Chromebook), because the calculator runs in Claude's own sandbox, not on your computer.
+Nothing to install.
 
 1. In Settings > Capabilities, switch on "Code execution and file creation" (called "Create and edit files" in
    the updated Settings layout). The skills run a small Python calculator in the conversation's sandbox. With

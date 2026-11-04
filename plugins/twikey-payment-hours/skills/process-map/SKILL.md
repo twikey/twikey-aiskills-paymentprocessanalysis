@@ -39,7 +39,9 @@ python3 -B "${CLAUDE_SKILL_DIR}/scripts/hours.py" show
 python3 -B "${CLAUDE_SKILL_DIR}/scripts/hours.py" unset task.refunds
 ```
 
-Where `${CLAUDE_SKILL_DIR}` is not filled in (claude.ai), use the folder this SKILL.md is in.
+Where `${CLAUDE_SKILL_DIR}` is not filled in (claude.ai), use the folder this SKILL.md is in. If `python3` is not
+found (Windows), run the same command with `py -3`, then with `python`. If none works, work it out by hand as
+with code execution off (below), and say so.
 
 - One task per step: `task.STEP.main.label|mode|who|count|minutes`. STEP: `invoice`, `collect`, `match`,
   `chase`, `failed`, `details`, `refunds`, `reporting`. mode: `manual`, `partly`, `automatic`. Always set the

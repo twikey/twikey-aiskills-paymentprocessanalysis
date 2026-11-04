@@ -110,6 +110,12 @@ class SkillTest(unittest.TestCase):
             self.assertIn(SKILL_PATH, body, name)
             self.assertIn("folder this SKILL.md is in", body, name)
 
+    def test_windows_python_fallback(self):
+        for name in SKILLS:
+            body = read(os.path.join(ROOT, "skills", name, "SKILL.md"))
+            self.assertIn("`py -3`, then with `python`", body, name)
+            self.assertIn(SKILL_PATH, body, name)  # quoted, so a path with spaces works
+
     def test_no_number_picked_for_the_user(self):
         for name in SKILLS:
             self.assertIn("never pick one", read(os.path.join(ROOT, "skills", name, "SKILL.md")), name)
@@ -167,18 +173,47 @@ class CopyRulesTest(unittest.TestCase):
 
 
 class ZipTest(unittest.TestCase):
+    def setUp(self):
+        import contextlib
+        import io
+        import tempfile
+        self.build = load_module("build_zips", os.path.join(ROOT, "build_zips.py"))
+        self.tmp = tempfile.TemporaryDirectory()
+        self.out1, self.out2 = os.path.join(self.tmp.name, "a"), os.path.join(self.tmp.name, "b")
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.build.build(self.out1)
+            self.build.build(self.out2)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
     def test_zips_hold_every_file_of_their_skill(self):
-        build = load_module("build_zips", os.path.join(ROOT, "build_zips.py"))
-        if not os.path.isdir(build.DEFAULT_OUT):
-            self.skipTest("no zips yet, run build_zips.py")
         for name in SKILLS:
             base = os.path.join(ROOT, "skills", name)
-            expected = {os.path.join(name, os.path.relpath(f, base)): f for f in build.files_of(base)}
-            with zipfile.ZipFile(os.path.join(build.DEFAULT_OUT, name + ".zip")) as z:
+            expected = {name + "/" + os.path.relpath(f, base).replace(os.sep, "/"): f for f in self.build.files_of(base)}
+            with zipfile.ZipFile(os.path.join(self.out1, name + ".zip")) as z:
                 self.assertEqual(sorted(z.namelist()), sorted(expected), name)
+                self.assertFalse(any("\\" in n for n in z.namelist()), name)  # zip entries use forward slashes
                 for arc, src in expected.items():
                     with open(src, "rb") as f:
                         self.assertEqual(z.read(arc), f.read(), arc)
+
+    def test_build_is_reproducible(self):
+        for name in SKILLS:
+            with open(os.path.join(self.out1, name + ".zip"), "rb") as a, open(os.path.join(self.out2, name + ".zip"), "rb") as b:
+                self.assertEqual(a.read(), b.read(), name)
+
+    def test_arcname_uses_forward_slashes_on_windows(self):
+        import ntpath
+        import types
+        real = self.build.os
+        self.build.os = types.SimpleNamespace(path=ntpath, sep="\\")
+        try:
+            self.assertEqual(self.build.arcname("process-map", "C:\\Users\\Jan de Vries\\skills\\process-map",
+                                                "C:\\Users\\Jan de Vries\\skills\\process-map\\scripts\\hours.py"),
+                             "process-map/scripts/hours.py")
+        finally:
+            self.build.os = real
 
 
 if __name__ == "__main__":

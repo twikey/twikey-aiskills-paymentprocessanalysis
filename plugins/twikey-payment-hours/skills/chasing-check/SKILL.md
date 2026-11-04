@@ -39,7 +39,9 @@ python3 -B "${CLAUDE_SKILL_DIR}/scripts/hours.py" unset task.chase && python3 -B
   'task.chase.r1_mail.who=accounting' 'task.chase.r1_mail.label=First reminder by e-mail' 'note.dso=DSO: 48 days, your figure'
 ```
 
-Where `${CLAUDE_SKILL_DIR}` is not filled in (claude.ai), use the folder this SKILL.md is in.
+Where `${CLAUDE_SKILL_DIR}` is not filled in (claude.ai), use the folder this SKILL.md is in. If `python3` is not
+found (Windows), run the same command with `py -3`, then with `python`. If none works, work it out by hand as
+without code execution (below), and say so.
 
 Every task takes these five keys, all tasks in one `set`. Names, labels, a worked example, edge cases:
 `references/chasing.md`.

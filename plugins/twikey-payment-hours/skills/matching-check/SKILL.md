@@ -40,7 +40,9 @@ python3 -B "${CLAUDE_SKILL_DIR}/scripts/hours.py" unset task.match
 python3 -B "${CLAUDE_SKILL_DIR}/scripts/hours.py" set 'task.match.by_hand.count=(800-200)*35%-25-8' 'task.match.by_hand.minutes=3'
 ```
 
-Where `${CLAUDE_SKILL_DIR}` is not filled in (claude.ai), use the folder this SKILL.md is in.
+Where `${CLAUDE_SKILL_DIR}` is not filled in (claude.ai), use the folder this SKILL.md is in. If `python3` is not
+found (Windows), run the same command with `py -3`, then with `python`. If none works, work it out by hand as
+with code execution off (below), and say so.
 
 Exit code 2 with `error: ...` means a bad key or value: fix it and run again. Questions, task names, labels and a
 worked example: `references/matching.md`.
