@@ -21,7 +21,11 @@ own commands.
 - `checked`: `false` when there is no file with failed collections. Then give the `not_checked` line as it is,
   never "none".
 - `total`: failed collections (`count`) and euros (`amount`) over `period`. `amount_unknown_count`: rejected
-  batches without a total. Say their amount is unknown, never zero.
+  batches without a total. Say their amount is unknown, never zero. A `count` of zero with `checked` `true`
+  means none in the files that were given.
+- `not_counted`: one line for each kind of failure file that is missing. Rejections come in a pain.002 or a
+  failed-collections export, returns and refunds in a camt.053 or camt.054 statement. Give each line as it is,
+  right after the total, and never say there were no rejections or no returns of a kind that was not checked.
 - `by_code`: per reason code the count, euros, `meaning` (Twikey's own text from twikey.com/product/r-codes),
   `categories` and a `page` link in the user's language. `known: false` with a `meaning_source` is a code not on
   Twikey's reason-code page but on the EPC list of SEPA reason codes: give the EPC reason as written (English).
@@ -40,7 +44,9 @@ own commands.
   holiday (`moved_runs`) and `qualifies` (enough collections to count for a suggested day). Only days with two
   months of data or more, over `days_of_month_period`, with new presentations of a failed collection left out
   (`days_of_month_basis`). `days_of_month_overall`: the rate for all days together. Show each rate with the
-  collections presented, not the failures alone. Leave the day pattern out when the output has none.
+  collections presented, not the failures alone. Leave the day pattern out when the output has none. Without a
+  camt.053 or camt.054 statement the collections presented are not known: `days_of_month_overall` is `null` and
+  `days_of_month_not_checked` holds the line to give instead of a rate.
 - `repeat_customers`: per customer code with two or more failures, the number of failures.
 
 ## How to present it

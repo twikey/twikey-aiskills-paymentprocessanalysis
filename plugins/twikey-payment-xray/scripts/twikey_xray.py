@@ -304,7 +304,7 @@ def print_intake(res):
     print(T("ledger").format(invoices=pl(t["invoices"], "invoice"), customers=pl(t["customers"], "customer"),
                              others=pl(t["other_parties"], "other_party"), codes=pl(t["parties"], "code"),
                              rows=pl(t["mandate_rows"], "mandate_row"), refs=pl(t["mandate_codes"], "reference")))
-    for line in ledger_periods(t, rep.get("periods") or {}):
+    for line in ledger_periods(t, rep.get("periods") or {}, rep["files"]):
         print("  " + line)
     print(T("not_in_ledger").format(out=pl(t["debit_lines_skipped"], "payment"),
                                     own=pl(t["own_transfers_skipped"], "transfer"),
@@ -320,14 +320,18 @@ def print_intake(res):
     print(T("coded"))
 
 
-def ledger_periods(t, periods):
-    """One line per source, each with its own period, so counts from different periods never share a line."""
+def ledger_periods(t, periods, files=None):
+    """One line per source, each with its own period, so counts from different periods never share a line. A source
+    whose export was not given says so, never "none" (files: the file list intake recorded)."""
     def span(p):
         return T("span").format(start=dlong(p["from"]), end=dlong(p["to"])) if p else ""
 
-    return [T("bank_in").format(n=count(t["bank_credit_lines"]), span=span(periods.get("bank"))),
-            T("coll_in").format(n=count(t["collections_collected"]), span=span(periods.get("collections"))),
-            T("failed_in").format(n=count(t["failed_collections"]), span=span(periods.get("failed_collections")))]
+    given = checks.sources(files) if files else {}
+    rows = (("bank", "bank_in", "bank_credit_lines", "bank"), ("collected", "coll_in", "collections_collected",
+                                                                "collections"),
+            ("failures", "failed_in", "failed_collections", "failed_collections"))
+    return [T(key).format(n=count(t[total]), span=span(periods.get(period))) if given.get(need, True)
+            else T(key + "_missing") for need, key, total, period in rows]
 
 
 def intake_data(res):
@@ -420,7 +424,7 @@ def cmd_decode(args):
     cfg = load_config(home)
     store, mandates, collections, bank = load_ledger(home)
     lang = lang_of(cfg, args)
-    data = checks.decode(collections, lang, ledger_sources(home, store, mandates, collections, bank)["failures"])
+    data = checks.decode(collections, lang, ledger_sources(home, store, mandates, collections, bank))
 
     def amount(v):
         s = money(v["amount"])
@@ -434,11 +438,18 @@ def cmd_decode(args):
             twikey_lines(d["twikey"])
             return
         p = d["period"]
-        print(T("dec_total").format(n=num(d["total"]["count"]), amount=amount(d["total"]), start=dlong(p["from"]),
-                                    end=dlong(p["to"]), months=pl(p["months"], "month")))
-        print("\n" + T("by_code"))
         cat_names = T("cat")
         colon = claims.COLON[lang]  # French: a space before the colon
+        if not d["total"]["count"]:
+            print(T("dec_none"))
+        else:
+            print(T("dec_total").format(n=num(d["total"]["count"]), amount=amount(d["total"]),
+                                        start=dlong(p["from"]), end=dlong(p["to"]), months=pl(p["months"], "month")))
+        # a failure file of one kind only: the other kind was not counted
+        for line in d["not_counted"]:
+            print(line)
+        if d["by_code"]:
+            print("\n" + T("by_code"))
         for r in d["by_code"]:
             cats = ", ".join("%s%s %s" % (cat_names.get(k, k), colon, num(v))
                              for k, v in sorted(r["categories"].items()))
@@ -447,11 +458,12 @@ def cmd_decode(args):
                 meaning = T("epc").format(meaning=meaning)
             print("  %-5s %3d  %12s  %s  %s%s" % (r["label"] or "?", r["count"], amount(r), cats, meaning,
                                                  "  " + r["page"] if r["page"] else ""))
-        print("\n" + T("points_to"))
+        if d["by_category"]:
+            print("\n" + T("points_to"))
         width = max([13] + [len(cat_names.get(cat, cat)) for cat in d["by_category"]])
         for cat, v in d["by_category"].items():
             print("  %-*s %3d  %12s  %s" % (width, cat_names.get(cat, cat), v["count"], amount(v), v["meaning"]))
-        if d["days_of_month"]:
+        if d["days_of_month"] and d["days_of_month_overall"]:
             per = d["days_of_month_period"]
             print("\n" + T("rate_head").format(start=month_year(per["from"] + "-01", lang),
                                               end=month_year(per["to"] + "-01", lang)))
@@ -489,7 +501,7 @@ def cmd_mandates(args):
         raise XrayError("--on must look like 2026-10-31.")
     lang = lang_of(cfg, args)
     data = checks.mandate_health(mandates, collections, on, lang,
-                                 ledger_sources(home, store, mandates, collections, bank)["mandates"])
+                                 ledger_sources(home, store, mandates, collections, bank))
 
     def item_text(i):
         if "customers" in i:
@@ -519,13 +531,18 @@ def cmd_mandates(args):
         labels = T("issues")
         for k in ISSUES_SHOWN:
             items = d["issues"][k]
+            if items is None:  # its export is missing: named in a Not checked line below, never "none"
+                continue
             line = "  %s%s %s" % (labels[k], claims.COLON[lang], count(len(items)))
             if items:
                 line += "  " + " | ".join(item_text(i) for i in items[:10])
             if d["failed_amount_on"].get(k):
                 line += T("failed_on").format(amount=money(d["failed_amount_on"][k]))
             print(line)
-        print(T("to_renew").format(n=count(d["to_renew"]), m=count(d["counts"]["unused_since_signing"])))
+        for line in d["not_counted"]:
+            print(line)
+        if d["to_renew"] is not None:
+            print(T("to_renew").format(n=count(d["to_renew"]), m=count(d["counts"]["unused_since_signing"])))
         twikey_lines(d["twikey"])
     out(args, data, txt)
 
@@ -538,16 +555,25 @@ def cmd_match(args):
     cfg = load_config(home)
     lang = lang_of(cfg, args)
     store, mandates, collections, bank = load_ledger(home)
-    data = checks.match(store, bank, lang, ledger_sources(home, store, mandates, collections, bank)["bank"])
+    data = checks.match(store, bank, lang, ledger_sources(home, store, mandates, collections, bank))
 
     def txt(d):
+        p = d["period"]
+        if d["credit_lines"] is not None:  # a bank statement was given: its payments are counted
+            if d["credit_lines"]["count"]:
+                print(T("match_head").format(n=num(d["credit_lines"]["count"]),
+                                             amount=money(d["credit_lines"]["amount"]),
+                                             start=dlong(p["from"]), end=dlong(p["to"])))
+            else:
+                print(T("match_none"))
         if not d["checked"]:
+            # no bank statement, or no invoices to match the payments against: no group was checked
             print(d["not_checked"])
             twikey_lines(d["twikey"])
             return
-        p = d["period"]
-        print(T("match_head").format(n=num(d["credit_lines"]["count"]), amount=money(d["credit_lines"]["amount"]),
-                                     start=dlong(p["from"]), end=dlong(p["to"])))
+        if not d["credit_lines"]["count"]:
+            twikey_lines(d["twikey"])
+            return
         labels = T("match_rows")
         for k in MATCH_ROWS:
             c = d[k]
@@ -576,17 +602,26 @@ def cmd_terms(args):
     home = home_dir(args)
     cfg = load_config(home)
     lang = lang_of(cfg, args)
-    store, _, collections, _ = load_ledger(home)
-    data = checks.terms(store, cfg, as_of(cfg, args), collections, lang)
+    store, mandates, collections, bank = load_ledger(home)
+    data = checks.terms(store, cfg, as_of(cfg, args), collections, lang,
+                        ledger_sources(home, store, mandates, collections, bank))
 
     def txt(d):
+        if not d["checked"]:  # no invoice list: nothing to measure, so nothing that looks like a result
+            print(d["not_checked"])
+            twikey_lines(d["twikey"])
+            return
         print(T("terms_head").format(date=dlong(d["as_of"])))
         labels = T("profiles")
         for k in checks.PROFILES:
             p = d["profiles"][k]
+            if p is None:  # not checked: named in the line below
+                continue
             print(T("profile_line").format(label=labels[k], rule=d["rules"][k], customers=pl(p["count"], "customer"),
                                            open=money(p["open_amount"]), overdue=money(p["overdue_amount"]),
                                            codes=codes(p["customers"])))
+        for line in d["not_counted"]:
+            print(line)
         print("\n" + T("not_clockwork"))
         print(T("table"))
         for r in d["customers"]:
@@ -625,7 +660,8 @@ def cmd_steps(args):
                 line += t["per_month"].format(per_month=dec(i["per_month"]), months=i["months"],
                                               months_word=t["month_one"] if i["months"] == 1 else t["month_many"])
             print(line)
-        print(t["total"].format(items=d["total_items"], steps=d["total_steps"]))
+        if any(i["checked"] for i in d["items"]):  # a total of nothing checked is no total, never zero
+            print(t["total"].format(items=d["total_items"], steps=d["total_steps"]))
         if d["per_month_total"] is not None:
             print(t["per_month_total"].format(items=dec(d["per_month_total"]), steps=dec(d["per_month_steps_total"])))
         zero = [i["label"] for i in d["items"] if not i["count"] and i["checked"]]
@@ -666,12 +702,14 @@ def cmd_month(args):
 def cmd_golive(args):
     home = home_dir(args)
     cfg = load_config(home)
-    store, mandates, collections, _ = load_ledger(home)
+    store, mandates, collections, bank = load_ledger(home)
     on = as_of(cfg, args)
     lang = lang_of(cfg, args)
-    mand = checks.mandate_health(mandates, collections, on, lang)
-    term = checks.terms(store, cfg, on, collections, lang)
-    data = checks.golive(store, collections, mand, term, args.tool, lang)
+    source = ledger_sources(home, store, mandates, collections, bank)
+    mand = checks.mandate_health(mandates, collections, on, lang, source)
+    term = checks.terms(store, cfg, on, collections, lang, source)
+    data = checks.golive(store, collections, mand, term, args.tool, lang, source)
+    skipped = data["not_checked"]
 
     def gl(n, word=num):
         """A count in the go-live facts. French spells one to ten too: mandates and customers are masculine."""
@@ -682,18 +720,31 @@ def cmd_golive(args):
         return "s" if n > 1 else ""
 
     def txt(d):
+        # a fact whose export is missing is left out here and named in a Not checked line, never shown as zero
         print(T("golive_head"))
-        print(T("gl_customers").format(n=num(d["customers"]), dd=num(d["direct_debit_customers"])))
-        print(T("gl_invoices").format(n=dec(d["invoices_per_month"])))
-        print(T("gl_mandates").format(core=gl(d["mandates_core"]), b2b=gl(d["mandates_b2b"]),
-                                      renew=gl(d["mandates_to_renew"], count),
-                                      never=gl(d["mandates_never_used"], count), never_s=s(d["mandates_never_used"]),
-                                      nc=gl(d["b2b_not_confirmed"], count), nc_s=s(d["b2b_not_confirmed"])))
-        print(T("gl_failed").format(n=dec(d["failed_per_month"])))
-        print(T("gl_open").format(open=money(d["open_receivables"]), overdue=money(d["overdue"])))
-        labels = T("profiles")
-        print(T("gl_profiles").format(list=", ".join("%s %s" % (labels[k].lower(), gl(v, count))
-                                                     for k, v in d["profiles"].items())))
+        if "customers" not in skipped:
+            print(T("gl_customers").format(n=num(d["customers"]), dd=num(d["direct_debit_customers"])))
+        if "invoices_per_month" not in skipped:
+            print(T("gl_invoices").format(n=dec(d["invoices_per_month"])))
+        if "mandates_to_renew" in skipped:
+            print(T("gl_mandates_short").format(core=gl(d["mandates_core"]), b2b=gl(d["mandates_b2b"]),
+                                                nc=gl(d["b2b_not_confirmed"], count), nc_s=s(d["b2b_not_confirmed"])))
+        elif "mandates" not in skipped:
+            print(T("gl_mandates").format(core=gl(d["mandates_core"]), b2b=gl(d["mandates_b2b"]),
+                                          renew=gl(d["mandates_to_renew"], count),
+                                          never=gl(d["mandates_never_used"], count),
+                                          never_s=s(d["mandates_never_used"]),
+                                          nc=gl(d["b2b_not_confirmed"], count), nc_s=s(d["b2b_not_confirmed"])))
+        if "failed_per_month" not in skipped:
+            print(T("gl_failed").format(n=dec(d["failed_per_month"])))
+        if "open_receivables" not in skipped:
+            print(T("gl_open").format(open=money(d["open_receivables"]), overdue=money(d["overdue"])))
+        if "profiles" not in skipped:
+            labels = T("profiles")
+            print(T("gl_profiles").format(list=", ".join("%s %s" % (labels[k].lower(), gl(v, count))
+                                                         for k, v in d["profiles"].items() if v is not None)))
+        for line in d["not_counted"]:
+            print(line)
         if "tool" in d:
             t = d["tool"]
             if t["listed_as"]:
@@ -761,7 +812,7 @@ def cmd_status(args):
             print(T("st_ledger").format(date=dlong(d["intake_at"][:10]), invoices=pl(t["invoices"], "invoice"),
                                         customers=pl(t.get("customers", t["parties"]), "customer"),
                                         rows=pl(t["mandate_rows"], "mandate_row")))
-            for line in ledger_periods(t, d["periods"]):
+            for line in ledger_periods(t, d["periods"], (info or {}).get("files")):
                 print("  " + line)
         else:
             print(T("st_no_ledger"))

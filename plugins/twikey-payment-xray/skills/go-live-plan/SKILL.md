@@ -16,7 +16,9 @@ folder the X-ray guard runs only X-ray's own commands. It returns the facts (`cu
 `direct_debit_customers`, `invoices_per_month`, `mandates_core`, `mandates_b2b`, `mandates_to_renew` (expired or
 expiring within 90 days), `mandates_never_used` (apart, not to renew), `b2b_not_confirmed`, `failed_per_month`,
 `open_receivables`, `overdue`, `profiles`), the Twikey lines this plan may use (`twikey`), the pricing page
-(`pricing_page`) and what to say about existing mandates (`existing_mandates`).
+(`pricing_page`) and what to say about existing mandates (`existing_mandates`). A fact whose export is missing is
+`null`, `not_checked` names the export per fact, and `not_counted` holds the lines to write in the starting point
+as they are. Never write such a fact as zero or none.
 
 The plan also needs customer and mandate codes that `golive` does not give. Run, in the same form and language:
 - `python3 -B "${CLAUDE_PLUGIN_ROOT}/scripts/twikey_xray.py" --home twikey-xray-workspace --lang en mandates --json`

@@ -37,6 +37,11 @@ FUNDS_CODES = ("AM04",)
 SKIP_CATEGORIES = ("partial", "unmatched")  # bank lines that get match suggestions
 TAKEN = ("paid_but_open", "bundled", "double", "overpaid")  # their invoices are settled at the bank already
 CLOSED = ("collected_later", "invoice_closed", "paid_at_bank", "bank_credit")
+# The exports each section of the work pack needs (checks.sources). A match suggestion needs the bank statement and
+# the invoices, a mandate to renew needs the mandate list and a date of last collection.
+SECTION_NEEDS = {"new_attempts": ("failures",), "mails": ("failures",),
+                 "mandates_to_renew": ("mandates", "last_collection"), "match_suggestions": ("bank", "invoices"),
+                 "paid_but_open": ("bank", "invoices"), "double_payment": ("bank", "invoices")}
 
 TEXT = {
     "en": {
@@ -59,6 +64,8 @@ TEXT = {
                   "or more each, over two months or more, in your files.",
         "no_better_day": "No suggested day: no collection day in your files fails less often than all collections "
                          "together.",
+        "no_day_not_checked": "Suggested day not checked: it needs the collections presented on each day, from a "
+                              "camt.053 or camt.054 statement, and there is none in your exports.",
         "attempt": "- **{customer}**, mandate {mandate}{invoice}: {amount}, {failed}. {code}: {meaning}. "
                    "New attempt: {new_date}.{note}",
         "failed_once": "failed on {date}", "failed_times": "failed {times}, last on {date}",
@@ -81,6 +88,9 @@ TEXT = {
         "no_invoice": " No invoice found for it in your export: check in your books that the amount is still owed.",
         "no_invoice_mail": "No invoice was found in your export for a collection in this mail: check in your books "
                            "that the amount is still owed before you send it.",
+        "no_invoice_list": " No invoice list in your exports: check in your books that the amount is still owed.",
+        "no_invoice_mail_list": "No invoice list in your exports: check in your books that each amount in this mail "
+                                "is still owed before you send it.",
         "reason": {"new_attempt": "new attempt", "new_mandate": "new mandate needed",
                    "conversation": "how would you like to pay", "b2b_register": "register the B2B mandate"},
         "subject": "Subject",
@@ -96,6 +106,8 @@ TEXT = {
                     "presented on it ({base}).",
         "active": " Still active: an open invoice or a collection in the last 12 months.",
         "inactive": " No open invoice and no collection in the last 12 months.",
+        "active_unknown": " Whether it is still active is not checked: that needs the invoice list and a file with "
+                          "collections in your exports.",
         "keep_valid": " A collection on it before {expiry} keeps it valid, so there is no renewal mail.",
         "no_mail": " Not expired yet, so there is no renewal mail.",
         "renew_heading": "%s, mandate %s",
@@ -147,6 +159,8 @@ TEXT = {
                   "nodig met elk 20 domiciliëringen of meer, over twee maanden of meer, in je bestanden.",
         "no_better_day": "Geen voorgestelde dag: geen enkele domiciliëringsdag in je bestanden heeft een lager "
                          "percentage mislukte domiciliëringen dan alle domiciliëringen samen.",
+        "no_day_not_checked": "Voorgestelde dag niet nagekeken: daarvoor zijn de aangeboden domiciliëringen per dag "
+                              "nodig, uit een camt.053- of camt.054-afschrift, en dat staat niet in je exports.",
         "attempt": "- **{customer}**, mandaat {mandate}{invoice}: {amount}, {failed}. {code}: {meaning}. "
                    "Heraanbieden op: {new_date}.{note}",
         "failed_once": "mislukt op {date}", "failed_times": "{times} mislukt, laatst op {date}",
@@ -172,6 +186,10 @@ TEXT = {
                       "is.",
         "no_invoice_mail": "Voor een domiciliëring in deze mail is geen factuur gevonden in je export: kijk in je "
                            "boekhouding na of het bedrag nog verschuldigd is voor je de mail verstuurt.",
+        "no_invoice_list": " Geen factuurlijst in je exports: kijk in je boekhouding na of het bedrag nog "
+                           "verschuldigd is.",
+        "no_invoice_mail_list": "Geen factuurlijst in je exports: kijk in je boekhouding na of elk bedrag in deze "
+                                "mail nog verschuldigd is voor je de mail verstuurt.",
         "reason": {"new_attempt": "wordt heraangeboden", "new_mandate": "nieuw mandaat nodig",
                    "conversation": "hoe wil je betalen", "b2b_register": "B2B-mandaat laten registreren"},
         "subject": "Onderwerp",
@@ -189,6 +207,8 @@ TEXT = {
                     "domiciliëring die op dit mandaat aangeboden werd ({base}).",
         "active": " Nog actief: een open factuur of een domiciliëring in de laatste 12 maanden.",
         "inactive": " Geen open factuur en geen domiciliëring in de laatste 12 maanden.",
+        "active_unknown": " Of het nog actief is, is niet nagekeken: daarvoor zijn de factuurlijst en een bestand met "
+                          "domiciliëringen in je exports nodig.",
         "keep_valid": " Een domiciliëring op dit mandaat vóór {expiry} houdt het geldig, dus geen mail om het te "
                       "vernieuwen.",
         "no_mail": " Nog niet verlopen, dus geen mail om het te vernieuwen.",
@@ -242,6 +262,8 @@ TEXT = {
                   "chacun 20 prélèvements ou plus, sur deux mois ou plus, dans vos fichiers.",
         "no_better_day": "Pas de jour proposé : aucun jour de prélèvement de vos fichiers n'échoue moins souvent "
                          "que l'ensemble des prélèvements.",
+        "no_day_not_checked": "Jour proposé non vérifié : il faut pour cela les prélèvements présentés par jour, "
+                              "issus d'un relevé camt.053 ou camt.054, et vos exports n'en contiennent pas.",
         "attempt": "- **{customer}**, mandat {mandate}{invoice} : {amount}, {failed}. {code} : {meaning}. "
                    "Nouvelle présentation : {new_date}.{note}",
         "failed_once": "échoué le {date}", "failed_times": "échoué {times}, la dernière fois le {date}",
@@ -266,6 +288,10 @@ TEXT = {
                       "comptabilité que le montant est encore dû.",
         "no_invoice_mail": "Aucune facture n'a été trouvée dans votre export pour un prélèvement de ce mail : vérifiez "
                            "dans votre comptabilité que le montant est encore dû avant de l'envoyer.",
+        "no_invoice_list": " Aucune liste de factures dans vos exports : vérifiez dans votre comptabilité que le "
+                           "montant est encore dû.",
+        "no_invoice_mail_list": "Aucune liste de factures dans vos exports : vérifiez dans votre comptabilité que "
+                                "chaque montant de ce mail est encore dû avant de l'envoyer.",
         "reason": {"new_attempt": "nouvelle présentation", "new_mandate": "nouveau mandat nécessaire",
                    "conversation": "comment souhaitez-vous payer", "b2b_register": "faire enregistrer le mandat B2B"},
         "subject": "Objet",
@@ -281,6 +307,8 @@ TEXT = {
                     "présenté sur ce mandat ({base}).",
         "active": " Toujours actif : une facture ouverte ou un prélèvement au cours des 12 derniers mois.",
         "inactive": " Aucune facture ouverte et aucun prélèvement au cours des 12 derniers mois.",
+        "active_unknown": " Son activité n'est pas vérifiée : il faut pour cela la liste des factures et un fichier "
+                          "de prélèvements dans vos exports.",
         "keep_valid": " Un prélèvement sur ce mandat avant le {expiry} le garde valable, donc pas de mail de "
                       "renouvellement.",
         "no_mail": " Pas encore expiré, donc pas de mail de renouvellement.",
@@ -505,11 +533,13 @@ def open_failures(collections, store, on, since_days, codes, mat=None, expired=(
     collected = [c for c in collections if c["status"] == "collected"]
     groups = [g for g in debts(collections, on) if since <= parse_iso(g[-1]["date"]) <= on]
     invoice_of = find_invoices([g[0] for g in groups], store)
-    taken = {k for cat in TAKEN for line in (mat or {}).get(cat, {}).get("lines", []) for k in line["invoices"]}
-    credits = [dict(line, left=cents(line["amount"])) for line in (mat or {}).get("unmatched", {}).get("lines", [])
-               if line.get("customer")]
+    def lines(cat):  # a match group not checked (no bank statement or no invoices) is null
+        return ((mat or {}).get(cat) or {}).get("lines", [])
+
+    taken = {k for cat in TAKEN for line in lines(cat) for k in line["invoices"]}
+    credits = [dict(line, left=cents(line["amount"])) for line in lines("unmatched") if line.get("customer")]
     partial_left = {}
-    for line in (mat or {}).get("partial", {}).get("lines", []):
+    for line in lines("partial"):
         if line.get("still_open") is not None:
             partial_left.setdefault(line["invoices"][0], []).append(cents(line["still_open"]))
     later_md01 = {}
@@ -735,19 +765,33 @@ def prepare(store, mandates, collections, bank, on, since_days=DEFAULT_SINCE_DAY
             today=None, source=None):
     lang = _lang(lang)
     mail_lang = _lang(mail_lang or lang)
-    source = source or checks.sources(None, store, mandates, collections, bank)
+    # Without intake.json (source None) it is not known which exports were given: the work pack then says that no
+    # invoice was found, never that the list is missing, and judges activity on what the ledger holds.
+    invoice_list = bool(source["invoices"]) if source is not None else True
+    # Whether a customer is still active needs the invoice list (an open invoice) and a file with collections.
+    activity_known = bool(source["invoices"] and source["failures"]) if source is not None else True
+    source = checks.full(source) if source is not None else checks.sources(None, store, mandates, collections, bank)
     codes = checks.rcodes(lang)
     day, day_info = suggested_day(collections, on, today, lang)
-    mat = checks.match(store, bank, lang)
-    mand = checks.mandate_health(mandates, collections, on, lang)
-    expired = {i["mandate"] for i in mand["issues"]["expired"]}
+    if not source["collected"]:
+        # no collections that went through: the failure rate per day is not known, so no day is suggested
+        day = None
+        day_info.update({"qualifying_days": None, "overall_rate_pct": None, "overall_presented": None,
+                         "overall_failed": None, "retries_left_out": None, "no_day_reason": "not_checked"})
+    mat = checks.match(store, bank, lang, source)
+    mand = checks.mandate_health(mandates, collections, on, lang, source)
+    expired = {i["mandate"] for i in mand["issues"]["expired"] or []}
     scheme_of = {m["mandate"]: m.get("scheme") for m in mandates if m.get("scheme")}
     items, closed = open_failures(collections, store, on, since_days, codes, mat, expired, scheme_of)
     # debts from before the window whose invoice is still open in the books: not in the drafts, but the user should
     # know. Without a known invoice an old failure may well be paid (the invoice export may not reach back to it).
+    # Without the invoice list or a file with failed collections this is not checked: null, never zero.
     start = on - dt.timedelta(days=since_days)
-    older_open = sum(1 for it in open_failures(collections, store, on, 3660, codes, mat, expired, scheme_of)[0]
-                     if parse_iso(it["failure"]["date"]) < start and it["invoice"])
+    older_open = (sum(1 for it in open_failures(collections, store, on, 3660, codes, mat, expired, scheme_of)[0]
+                      if parse_iso(it["failure"]["date"]) < start and it["invoice"])
+                  if source["invoices"] and source["failures"] else None)
+    if not source["failures"]:
+        closed = dict.fromkeys(closed)  # no failed collections were read: none were left out either
     mails = build_mails(items, day, mail_lang)
     mail_reason = {m["customer"]: m["reason"] for m in mails}
 
@@ -768,9 +812,11 @@ def prepare(store, mandates, collections, bank, on, since_days=DEFAULT_SINCE_DAY
     mt = mail_templates(mail_lang)
     renew = []
     for status, issue, field in (("expired", "expired", "expired_on"), ("expiring", "expiring_90_days", "expires_on")):
-        for i in mand["issues"][issue]:
+        for i in mand["issues"][issue] or []:
             cust = i.get("customer")
             active = bool(cust) and still_active(cust, store, collections, on)
+            if not active and not activity_known:
+                active = None  # nothing found, but an export it needs is missing: not checked, never "inactive"
             item = {"customer": cust, "mandate": i["mandate"], "status": status,
                     "last_collection": i.get("last_presented"), "expiry_date": i[field],
                     "counted_from": i.get("counted_from") or i.get("last_presented"), "still_active": active,
@@ -789,36 +835,42 @@ def prepare(store, mandates, collections, bank, on, since_days=DEFAULT_SINCE_DAY
             renew.append(item)
     renew.sort(key=lambda r: (not r["still_active"], r["expiry_date"], r["mandate"]))
 
-    matches = match_suggestions(store, bank, mat)
     period = _period(store, collections, bank)
     t = TEXT[lang]
     closing = (t["closing"].format(period=t["period"] % (month_year(period["from"], lang),
                                                          month_year(period["to"], lang)))
                if period["from"] else t["closing_no_period"])
-    checked = {"new_attempts": source["failures"], "mails": source["failures"],
-               "mandates_to_renew": source["mandates"], "match_suggestions": source["bank"],
-               "paid_but_open": source["bank"], "double_payment": source["bank"]}
-    needs = {"new_attempts": "failures", "mails": "failures", "mandates_to_renew": "mandates",
-             "match_suggestions": "bank", "paid_but_open": "bank", "double_payment": "bank"}
+    # The exports each section needs. Without one of them the section is not checked: its content and counts are
+    # null, never zero, and not_checked names the first missing export.
+    missing = {k: checks.missing(source, needs) for k, needs in SECTION_NEEDS.items()}
+    checked = {k: v is None for k, v in missing.items()}
+    matches = match_suggestions(store, bank, mat) if checked["match_suggestions"] else None
+    counts = {"new_attempts": len(attempts), "mails": len(mails), "mandates_to_renew": len(renew),
+              "match_lines": len(matches["lines"]) if matches else None,
+              "without_candidate": matches["without_candidate"] if matches else None,
+              "paid_but_open": len(matches["paid_but_open"]) if matches else None,
+              "double_payment": len(matches["double_payment"]) if matches else None}
+    for section in ("new_attempts", "mails", "mandates_to_renew"):
+        if not checked[section]:
+            counts[section] = None
     return {
         "version": VERSION, "check": "month", "as_of": str(on), "since_days": since_days,
         "period": period, "window": {"from": str(on - dt.timedelta(days=since_days)), "to": str(on)},
         "language": lang, "mail_language": mail_lang,
         "checked": checked,
-        "not_checked": {k: checks.not_checked(needs[k], lang) for k, v in checked.items() if not v},
-        "counts": {"new_attempts": len(attempts), "mails": len(mails), "mandates_to_renew": len(renew),
-                   "match_lines": len(matches["lines"]), "without_candidate": matches["without_candidate"],
-                   "paid_but_open": len(matches["paid_but_open"]), "double_payment": len(matches["double_payment"])},
-        "new_attempts": attempts,
+        "not_checked": {k: checks.not_checked(need, lang) for k, need in missing.items() if need},
+        "invoice_list": invoice_list,
+        "counts": counts,
+        "new_attempts": attempts if checked["new_attempts"] else None,
         "collected_later": closed["collected_later"],
         "closed": closed,
         "older_open": older_open,
         "suggested_day": day,
         "day_statistics": day_info,
-        "mails": mails,
-        "mandates_to_renew": renew,
-        "match_suggestions": {k: matches[k] for k in ("lines", "without_candidate", "paid_but_open", "double_payment",
-                                                      "strengths")},
+        "mails": mails if checked["mails"] else None,
+        "mandates_to_renew": renew if checked["mandates_to_renew"] else None,
+        "match_suggestions": ({k: matches[k] for k in ("lines", "without_candidate", "paid_but_open",
+                                                       "double_payment", "strengths")} if matches else None),
         "closing": {"text": closing,
                     "twikey": [claims.line("failure-decoder", lang), claims.line("unmatched-payments", lang)],
                     "demo": claims.line("demo", lang)},
@@ -858,7 +910,7 @@ def renew_line(r, t, d, lang):
             s += t["after_many"].format(n=n_txt, last=last, failed=words(failed, lang))
     else:
         s = t["expired"].format(**v)
-    s += t["active"] if r["still_active"] else t["inactive"]
+    s += t["active"] if r["still_active"] else t["active_unknown"] if r["still_active"] is None else t["inactive"]
     if r["status"] == "expiring":
         s += t["keep_valid"].format(expiry=d(r["expiry_date"])) if r["advice"] else t["no_mail"]
     return s
@@ -904,7 +956,9 @@ def render(data, today=None):
                                   overall=pct(day["overall_rate_pct"], lang)) + " " + day["notice"], ""]
         else:
             why = (data.get("day_statistics") or {}).get("no_day_reason")
-            p += [t["no_better_day"] if why == "no_better_day" else t["no_day"], ""]
+            p += [{"no_better_day": t["no_better_day"], "not_checked": t["no_day_not_checked"]}.get(why, t["no_day"]),
+                  ""]
+        no_invoice = t["no_invoice"] if data.get("invoice_list", True) else t["no_invoice_list"]
         for a in data["new_attempts"]:
             failed = (t["failed_times"].format(times=times(a["attempts"], mt), date=d(a["failure_date"]))
                       if a.get("attempts", 1) > 1 else t["failed_once"].format(date=d(a["failure_date"])))
@@ -918,7 +972,7 @@ def render(data, today=None):
                                          meaning=a["meaning"] or "-",
                                          new_date=d(a["new_date"]) if a["new_date"] else t["pick_day"],
                                          note=(t[WAIT_NOTE[a["mail_reason"]]] if a.get("mail_reason") in WAIT_NOTE
-                                               else "") + ("" if a["invoice"] else t["no_invoice"])))
+                                               else "") + ("" if a["invoice"] else no_invoice)))
         if not data["new_attempts"]:
             p.append(t["none"])
         p.append("")
@@ -935,7 +989,7 @@ def render(data, today=None):
             p += ["### %s%s %s" % (mail["customer"], t["colon"], t["reason"][mail["reason"]]), "",
                   "**%s%s** %s" % (t["subject"], t["colon"], mail["subject"]), "", _quote(mail["body"]), ""]
             if any(not i.get("invoice") for i in mail.get("items") or []):
-                p += [t["no_invoice_mail"], ""]
+                p += [t["no_invoice_mail"] if data.get("invoice_list", True) else t["no_invoice_mail_list"], ""]
             # a conversation mail also covers debts that need a new mandate or a B2B registration: say what to add
             if mail["reason"] == "conversation":
                 for cat in ("new_mandate", "b2b_register"):
@@ -968,11 +1022,11 @@ def render(data, today=None):
                 p += [t["covered"] if r["mail_covered_by"] == "new_mandate" else t["covered_other"], ""]
 
     # 4. match suggestions
-    ms = data["match_suggestions"]
     p += ["## %s" % t["s4"], ""]
     if skipped("match_suggestions"):
         p += [not_checked["match_suggestions"], ""]
     else:
+        ms = data["match_suggestions"]
         p += [t["match_intro"], ""]
         for line in ms["lines"]:
             cands = t["or"].join(t["candidate"].format(invoice=c["invoice"], customer=c["customer"],

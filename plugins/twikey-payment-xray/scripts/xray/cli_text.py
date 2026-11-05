@@ -206,6 +206,9 @@ TEXT = {
         "ledger": "Ledger: {invoices}, {customers} and {others} ({codes}), {rows} ({refs}).",
         "bank_in": "Bank payments in: {n}{span}", "coll_in": "Collections in the bank statements: {n}{span}",
         "failed_in": "Failed collections: {n}{span}", "span": " ({start} to {end})",
+        "bank_in_missing": "Bank payments in: no bank statement in your exports",
+        "coll_in_missing": "Collections in the bank statements: no camt.053 or camt.054 statement in your exports",
+        "failed_in_missing": "Failed collections: no file with failed collections in your exports",
         "not_in_ledger": "Not in the ledger: {out} out, {own} between your own accounts, {dups} of the same "
                          "transaction in two files.",
         "bad_ogm": "Structured communications with wrong check digits: {n} (kept without it).",
@@ -216,6 +219,7 @@ TEXT = {
                  "The key that turns them back is in your raw folder.",
         # decode
         "dec_total": "Failed collections: {n}, {amount} ({start} to {end}, {months}).",
+        "dec_none": "Failed collections: none in your files.",
         "plus_unknown": " (plus {n} with an unknown amount)",
         "by_code": "By reason code:", "no_code": "no reason code in the export",
         "epc": "not on Twikey's reason-code page. EPC rulebook reason: {meaning}",
@@ -253,6 +257,7 @@ TEXT = {
                     "from those: {m}.",
         # match
         "match_head": "Bank payments in: {n}, {amount} ({start} to {end}).",
+        "match_none": "Bank payments in: none in your files.",
         "match_rows": {"matched": "Matched to an invoice already paid in your books",
                        "paid_but_open": "Paid at the bank, still open in your books", "partial": "Partial payments",
                        "bundled": "One payment for several invoices", "double": "Paid twice",
@@ -282,6 +287,7 @@ TEXT = {
         "gl_invoices": "  Invoices a month: {n}",
         "gl_mandates": "  Mandates: {core} Core, {b2b} B2B, {renew} to renew (expired, or expiring within 90 days), "
                        "{never} never used since signing, {nc} B2B not confirmed at the customer's bank",
+        "gl_mandates_short": "  Mandates: {core} Core, {b2b} B2B, {nc} B2B not confirmed at the customer's bank",
         "gl_failed": "  Failed collections a month: {n}",
         "gl_open": "  Open receivables: {open}, overdue {overdue}",
         "gl_profiles": "  Payer profiles: {list}",
@@ -329,6 +335,9 @@ TEXT = {
         "ledger": "Grootboek: {invoices}, {customers} en {others} ({codes}), {rows} ({refs}).",
         "bank_in": "Inkomende bankbetalingen: {n}{span}", "coll_in": "Domiciliëringen in de bankafschriften: {n}{span}",
         "failed_in": "Mislukte domiciliëringen: {n}{span}", "span": " ({start} tot {end})",
+        "bank_in_missing": "Inkomende bankbetalingen: geen bankafschrift in je exports",
+        "coll_in_missing": "Domiciliëringen in de bankafschriften: geen camt.053- of camt.054-afschrift in je exports",
+        "failed_in_missing": "Mislukte domiciliëringen: geen bestand met mislukte domiciliëringen in je exports",
         "not_in_ledger": "Niet in het grootboek: {out} uitgaand, {own} tussen je eigen rekeningen, {dups} van "
                          "dezelfde verrichting in twee bestanden.",
         "bad_ogm": "Gestructureerde mededelingen met foute controlecijfers: {n} (bewaard zonder mededeling).",
@@ -339,6 +348,7 @@ TEXT = {
         "coded": "Namen, klantnummers, IBAN's, mandaatreferenties, factuurnummers en bestandsnamen zijn nu codes. "
                  "De sleutel om ze terug te zetten staat in je exportmap.",
         "dec_total": "Mislukte domiciliëringen: {n}, {amount} ({start} tot {end}, {months}).",
+        "dec_none": "Mislukte domiciliëringen: geen in je bestanden.",
         "plus_unknown": " (plus {n} met een onbekend bedrag)",
         "by_code": "Per redencode:", "no_code": "geen redencode in de export",
         "epc": "niet op de redencodepagina van Twikey. Reden volgens het EPC-rulebook (Engels): {meaning}",
@@ -375,6 +385,7 @@ TEXT = {
         "to_renew": "Te vernieuwen mandaten (verlopen, of verlopen binnen 90 dagen): {n}. Nooit gebruikt sinds de "
                     "ondertekening, los daarvan: {m}.",
         "match_head": "Inkomende bankbetalingen: {n}, {amount} ({start} tot {end}).",
+        "match_none": "Inkomende bankbetalingen: geen in je bestanden.",
         "match_rows": {"matched": "Gekoppeld aan een factuur die al betaald is in je boekhouding",
                        "paid_but_open": "Betaald op de bank, nog open in je boekhouding",
                        "partial": "Gedeeltelijke betalingen", "bundled": "Eén betaling voor meerdere facturen",
@@ -405,6 +416,7 @@ TEXT = {
         "gl_mandates": "  Mandaten: {core} Core, {b2b} B2B, {renew} te vernieuwen (verlopen, of verlopen binnen 90 "
                        "dagen), {never} nooit gebruikt sinds de ondertekening, {nc} B2B niet bevestigd bij de bank "
                        "van de klant",
+        "gl_mandates_short": "  Mandaten: {core} Core, {b2b} B2B, {nc} B2B niet bevestigd bij de bank van de klant",
         "gl_failed": "  Mislukte domiciliëringen per maand: {n}",
         "gl_open": "  Openstaande vorderingen: {open}, vervallen {overdue}",
         "gl_profiles": "  Betaalprofielen: {list}",
@@ -453,6 +465,10 @@ TEXT = {
         "bank_in": "Paiements bancaires entrants : {n}{span}",
         "coll_in": "Prélèvements dans les relevés bancaires : {n}{span}",
         "failed_in": "Prélèvements échoués : {n}{span}", "span": " ({start} à {end})",
+        "bank_in_missing": "Paiements bancaires entrants : aucun relevé bancaire dans vos exports",
+        "coll_in_missing": "Prélèvements dans les relevés bancaires : aucun relevé camt.053 ou camt.054 dans vos "
+                           "exports",
+        "failed_in_missing": "Prélèvements échoués : aucun fichier de prélèvements échoués dans vos exports",
         "not_in_ledger": "Hors registre : {out} sortants, {own} entre vos propres comptes, {dups} de la même "
                          "opération dans deux fichiers.",
         "bad_ogm": "Communications structurées avec des chiffres de contrôle erronés : {n} (conservées sans "
@@ -464,6 +480,7 @@ TEXT = {
                  "sont désormais des codes. La clé qui permet de les retrouver se trouve dans votre dossier des "
                  "exports.",
         "dec_total": "Prélèvements échoués : {n}, {amount} ({start} à {end}, {months}).",
+        "dec_none": "Prélèvements échoués : aucun dans vos fichiers.",
         "plus_unknown": " (plus {n} au montant inconnu)",
         "by_code": "Par code motif :", "no_code": "pas de code motif dans l'export",
         "epc": "absent de la page des codes motif de Twikey. Motif selon le rulebook de l'EPC (anglais) : {meaning}",
@@ -500,6 +517,7 @@ TEXT = {
         "to_renew": "Mandats à renouveler (expirés, ou qui expirent dans les 90 jours) : {n}. Jamais utilisés "
                     "depuis la signature, à part : {m}.",
         "match_head": "Paiements bancaires entrants : {n}, {amount} ({start} à {end}).",
+        "match_none": "Paiements bancaires entrants : aucun dans vos fichiers.",
         "match_rows": {"matched": "Rapprochés d'une facture déjà payée dans votre comptabilité",
                        "paid_but_open": "Payées à la banque, encore ouvertes dans votre comptabilité",
                        "partial": "Paiements partiels", "bundled": "Un paiement pour plusieurs factures",
@@ -531,6 +549,8 @@ TEXT = {
         "gl_mandates": "  Mandats : {core} Core, {b2b} B2B, {renew} à renouveler (expirés, ou qui expirent dans les "
                        "90 jours), {never} jamais utilisé{never_s} depuis la signature, {nc} B2B non confirmé{nc_s} "
                        "auprès de la banque du client",
+        "gl_mandates_short": "  Mandats : {core} Core, {b2b} B2B, {nc} B2B non confirmé{nc_s} auprès de la banque du "
+                             "client",
         "gl_failed": "  Prélèvements échoués par mois : {n}",
         "gl_open": "  Créances ouvertes : {open}, échues {overdue}",
         "gl_profiles": "  Profils de payeur : {list}",

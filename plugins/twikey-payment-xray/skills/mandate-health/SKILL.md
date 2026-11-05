@@ -42,6 +42,13 @@ and `expiring_90_days` (expiring within 90 days). Use this one definition everyw
 When the mandate list is missing, `checked` is `false` and `not_checked` holds the line that says so. Give that
 line as it is, never that there are no issues.
 
+Some types need more than the mandate list: the 36-month rule (`expired`, `expiring_90_days`,
+`unused_since_signing`) needs a date of last collection, from the list or from a file with collections,
+`last_collection_unknown` needs a file with returns, and `iban_changed` needs a file with collections. Without it,
+that type is `null` in `issues` and `counts`, `not_checked_issues` names the missing export, and `to_renew` is
+`null` when the 36-month rule was not checked. Give the lines in `not_counted` as they are. Never call a `null`
+type none.
+
 ## How to present it
 
 1. One line: mandates checked, Core and B2B.

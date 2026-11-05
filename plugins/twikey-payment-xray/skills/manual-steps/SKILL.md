@@ -26,8 +26,9 @@ needs no input from the user. Run it straight away.
 - `checklist`: the manual steps one item asks for when it is done by hand, in the workspace language.
   `steps_each`: how many steps that is. `steps_total`: count times steps each.
 - `examples`: up to 12 customer codes.
-- `checked`: `false` when the export this item type needs is missing. Then `not_checked` holds the line that
-  names it, and the count is not a count of zero.
+- `checked`: `false` when an export this item type needs is missing (matching needs the bank statement and the
+  invoices). Then `not_checked` holds the line that names it, and `count`, `steps_total` and `per_month` are
+  `null`, never zero.
 
 Then `total_items` and `total_steps` (the lines cover different periods), `per_month_total` and
 `per_month_steps_total` (when they can be computed, over the item types counted over a period, leaving out the

@@ -37,8 +37,10 @@ the mails and presents the collections in their own bank tool.
 - `as_of`, `period` (`from`, `to`), `window` (the failures it looks at), `since_days`, `language`,
   `mail_language`.
 - `checked` and `not_checked`, per section (`new_attempts`, `mails`, `mandates_to_renew`, `match_suggestions`,
-  `paid_but_open`, `double_payment`): `checked` is `false` when the export a section needs is missing, and then
-  `not_checked` holds the line that names it. Not checked is not the same as nothing to do.
+  `paid_but_open`, `double_payment`): `checked` is `false` when an export a section needs is missing, and then
+  `not_checked` holds the line that names it, and the section and its `counts` are `null`. Match suggestions,
+  paid but still open and paid twice need the bank statement and the invoices. Mandates to renew need the
+  mandate list and a date of last collection. Not checked is not the same as nothing to do.
 - `counts`: `new_attempts`, `mails`, `mandates_to_renew`, `match_lines`, `without_candidate`, `paid_but_open`,
   `double_payment`.
 - `new_attempts`: failed collections worth a new attempt, whose last failure is within `since_days` of the as-of
@@ -51,11 +53,12 @@ the mails and presents the collections in their own bank tool.
 - `closed` (`collected_later`, `invoice_closed`, `paid_at_bank`, `bank_credit`): failures left out because they
   are no longer owed: a later collection, an invoice closed (paid or canceled) in the books, a payment at the bank
   or a bank credit from that customer. They get no mail. An invoice paid at the bank but still open in the books
-  is under `paid_but_open`.
+  is under `paid_but_open`. `null` without a file with failed collections.
 - `older_open`: failed collections from before the window whose invoice is still open in the books. They are in
-  no draft.
+  no draft. `null` when the invoice list or the file with failed collections is missing.
 - An item with `invoice` `null` has no invoice in the exports: the work pack asks the user to check in the books
-  that the amount is still owed before sending the mail.
+  that the amount is still owed before sending the mail. `invoice_list` is `false` when there is no invoice list
+  at all.
 - `suggested_day`: `day`, `presented` (the collections presented on that day), `failed`, `months`, `rate_pct`,
   `overall_rate_pct` (all collections together), `qualifying_days`, `date`, `earliest`, `moved_to_working_day`,
   `notice` and `basis`. A day counts only with 20 or more collections presented over two months or more, a
@@ -63,7 +66,8 @@ the mails and presents the collections in their own bank tool.
   the best one fails less often than all collections together. `date` is the first time that day falls on or
   after `earliest`, 14 days after today or after the as-of date, whichever is later. `notice` is the line about
   the SEPA pre-notification period. `null` means no day, and `day_statistics.no_day_reason` says why:
-  `too_little_history` or `no_better_day` (no day fails less often than all collections together).
+  `too_little_history`, `no_better_day` (no day fails less often than all collections together) or
+  `not_checked` (no camt.053 or camt.054 statement, so the collections presented per day are not known).
 - `mails`: one draft per customer, never two, with codes where the names go: `customer`, `reason`, `template`,
   `subject`, `body`, `invoices`, `amount` (what is still owed in total, `null` when unknown), `failure_dates` and
   `items` (all of that customer's open items, each with its `category`, `amount` and `still_owed`). `reason` is one of `conversation` (how would they like to
@@ -76,7 +80,8 @@ the mails and presents the collections in their own bank tool.
   and "[date of the new collection]", "[datum van de nieuwe domiciliëring]" or "[date du nouveau prélèvement]".
 - `mandates_to_renew`: expired under the 36-month rule or expiring within 90 days. Per mandate: `customer`,
   `mandate`, `status` (`expired` or `expiring`), `last_collection`, `expiry_date`, `counted_from` (the
-  collection the 36 months run from), `still_active` (an open invoice or a collection in the last 12 months),
+  collection the 36 months run from), `still_active` (an open invoice or a collection in the last 12 months,
+  `null` when that is not checked because the invoice list or a file with collections is missing),
   `presented_after_expiry`, `failed_after_expiry`, `mail`, `mail_covered_by` and `advice`. Active ones come
   first. An expired mandate gets a renewal draft in `mail`, unless `mail_covered_by` names the customer's mail
   that already covers it. An expiring mandate gets no mail: `advice` is `collect_before_expiry`, a collection on
@@ -113,9 +118,10 @@ Name the sections as the work pack does, in its order:
 2. The suggested day with its basis, in one or two sentences: the day of the month, the collections presented on
    that day (`presented`) and the months they cover (`months`), its failure rate (`rate_pct`) against the rate
    for all collections (`overall_rate_pct`), and `date`, written out in the user's language. Then `notice`, as
-   given. When `suggested_day` is `null`, say why from `day_statistics.no_day_reason` (too little history, or no
-   day fails less often than all collections together), and that the new-attempt drafts hold the date
-   placeholder for the user to fill in. Never invent a rule of your own, such as a payday.
+   given. When `suggested_day` is `null`, say why from `day_statistics.no_day_reason` (too little history, no
+   day fails less often than all collections together, or not checked because there is no camt.053 or camt.054
+   statement), and that the new-attempt drafts hold the date placeholder for the user to fill in. Never invent a
+   rule of your own, such as a payday.
 3. The path of the work pack, exactly as printed. Say it holds the names, amounts and mail drafts, ready to
    read, and that Claude did not open it.
 4. `closing.text`, as given. Then one sentence: every draft is for the user to check and send, and a match

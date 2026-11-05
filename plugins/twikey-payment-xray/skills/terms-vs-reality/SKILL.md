@@ -28,6 +28,11 @@ folder the X-ray guard runs only X-ray's own commands.
 - `dso_90d`: DSO, days sales outstanding (open receivables against what was billed in the last 90 days, standard
   formula). `terms_days_90d`: the invoices' own terms (due date minus invoice date) over the same invoices,
   weighted by amount. `dso_minus_terms`: the gap.
+- `checked`: `false` without the invoice list. Then give the `not_checked` line as it is and nothing else: no
+  profiles, no euros, no aging.
+- Without a file with failed collections, `profiles.after_failures` is `null`, the clockwork rule says failed
+  collections were not checked, and `not_counted` holds the line to give as it is. Never say that no customer
+  pays after failed collections.
 
 ## How to present it
 

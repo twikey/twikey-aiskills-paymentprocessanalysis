@@ -93,7 +93,8 @@ The scan starts with the collections that failed.
   done by hand, with the checklist. Biggest first. Counted from your files.
 
 When a check needs an export you did not give, the scan says "Not checked" and names the missing export. It never
-reports "none" for something it could not check.
+reports "none" for something it could not check. With failed collections of one kind only (rejections from a
+pain.002, or returns from a camt.053 or camt.054 statement), it names the kind it could not count.
 
 Where a finding has a matching line on twikey.com, it ends with that line, quoted with its page. Some Dutch lines
 are translated from the English page, not quoted, and are marked "(vertaald uit het Engels)". The report ends with
@@ -288,4 +289,4 @@ Python standard library only. `tests/expected_demo.json` holds the demo results,
 
 MIT, see `LICENSE`.
 
-Twikey Payment X-ray 0.2.0, made by Twikey.
+Twikey Payment X-ray 0.2.1, made by Twikey.

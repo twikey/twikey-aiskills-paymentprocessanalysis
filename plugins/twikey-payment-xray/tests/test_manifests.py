@@ -27,7 +27,7 @@ class ManifestTest(unittest.TestCase):
     def test_plugin_json(self):
         p = load(os.path.join(PLUGIN, ".claude-plugin", "plugin.json"))
         self.assertEqual(p["name"], "twikey-payment-xray")
-        self.assertEqual(p["version"], "0.2.0")
+        self.assertEqual(p["version"], "0.2.1")
         self.assertEqual(p["author"]["name"], "Twikey")
         self.assertTrue(p["keywords"])
         from xray import VERSION

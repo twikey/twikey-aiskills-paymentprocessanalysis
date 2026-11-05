@@ -19,39 +19,120 @@ def _lang(lang):
 # --------------------------------------------------------------------------- which exports were read
 
 # What each check needs, and the line it prints when that export is missing. Not checked is never "none".
-SOURCES = ("invoices", "failures", "mandates", "bank")
+#   invoices, failures, mandates, bank: the four kinds of export.
+#   rejections: collections rejected or refused before the collection date (a pain.002 or a failed-collections CSV).
+#   returns: collections returned or refunded after it (a camt.053 or camt.054 statement or a failed-collections CSV).
+#   collected: the collections that went through (a camt.053 or camt.054 statement).
+#   collections: any file with collections, the same files as failures.
+#   last_collection: a date of last collection per mandate (the mandate list's own, or any file with collections).
+SOURCES = ("invoices", "failures", "mandates", "bank", "rejections", "returns", "collected", "collections",
+           "last_collection")
 NOT_CHECKED = {
     "en": {"invoices": "Not checked: no invoice list in your exports.",
            "failures": "Not checked: no file with failed collections in your exports (a pain.002, a camt.053 or "
                        "camt.054 statement, or a failed-collections export).",
            "mandates": "Not checked: no mandate list in your exports.",
-           "bank": "Not checked: no bank statement in your exports."},
+           "bank": "Not checked: no bank statement in your exports.",
+           "rejections": "Not checked: no pain.002 status report or failed-collections export in your exports.",
+           "returns": "Not checked: no camt.053 or camt.054 statement or failed-collections export in your exports.",
+           "collected": "Not checked: no camt.053 or camt.054 statement in your exports.",
+           "collections": "Not checked: no file with collections in your exports (a pain.002, a camt.053 or "
+                          "camt.054 statement, or a failed-collections export).",
+           "last_collection": "Not checked: no date of last collection in your mandate list, and no file with "
+                              "collections in your exports."},
     "nl": {"invoices": "Niet nagekeken: geen factuurlijst in je exports.",
            "failures": "Niet nagekeken: geen bestand met mislukte domiciliëringen in je exports (een pain.002, een "
                        "camt.053- of camt.054-afschrift of een export van mislukte domiciliëringen).",
            "mandates": "Niet nagekeken: geen mandatenlijst in je exports.",
-           "bank": "Niet nagekeken: geen bankafschrift in je exports."},
+           "bank": "Niet nagekeken: geen bankafschrift in je exports.",
+           "rejections": "Niet nagekeken: geen pain.002-statusrapport of export van mislukte domiciliëringen in je "
+                         "exports.",
+           "returns": "Niet nagekeken: geen camt.053- of camt.054-afschrift of export van mislukte domiciliëringen "
+                      "in je exports.",
+           "collected": "Niet nagekeken: geen camt.053- of camt.054-afschrift in je exports.",
+           "collections": "Niet nagekeken: geen bestand met domiciliëringen in je exports (een pain.002, een "
+                          "camt.053- of camt.054-afschrift of een export van mislukte domiciliëringen).",
+           "last_collection": "Niet nagekeken: geen datum van laatste domiciliëring in je mandatenlijst, en geen "
+                              "bestand met domiciliëringen in je exports."},
     "fr": {"invoices": "Non vérifié : aucune liste de factures dans vos exports.",
            "failures": "Non vérifié : aucun fichier de prélèvements échoués dans vos exports (un pain.002, un "
                        "relevé camt.053 ou camt.054, ou un export des prélèvements échoués).",
            "mandates": "Non vérifié : aucune liste de mandats dans vos exports.",
-           "bank": "Non vérifié : aucun relevé bancaire dans vos exports."},
+           "bank": "Non vérifié : aucun relevé bancaire dans vos exports.",
+           "rejections": "Non vérifié : aucun rapport de statut pain.002 ni export des prélèvements échoués dans vos "
+                         "exports.",
+           "returns": "Non vérifié : aucun relevé camt.053 ou camt.054 ni export des prélèvements échoués dans vos "
+                      "exports.",
+           "collected": "Non vérifié : aucun relevé camt.053 ou camt.054 dans vos exports.",
+           "collections": "Non vérifié : aucun fichier de prélèvements dans vos exports (un pain.002, un relevé "
+                          "camt.053 ou camt.054, ou un export des prélèvements échoués).",
+           "last_collection": "Non vérifié : aucune date de dernier prélèvement dans votre liste de mandats, et aucun "
+                              "fichier de prélèvements dans vos exports."},
 }
+# One sentence per missing export, naming what was not counted for that reason (the steps output says it the same way).
+NOT_COUNTED = {"en": "{line} Not counted for that reason: {labels}.",
+               "nl": "{line} Daarom niet geteld: {labels}.",
+               "fr": "{line} Pas comptés pour cette raison : {labels}."}
+AND = {"en": "and", "nl": "en", "fr": "et"}
 
 
 def sources(files=None, store=None, mandates=None, collections=None, bank=None):
-    """Which exports the ledger holds: from the file kinds intake recorded (intake.json), else from the ledger."""
+    """Which exports the ledger holds: from the file kinds intake recorded (intake.json), else from the ledger.
+    Without intake.json the kinds of failure file, the collections that went through and the dates of last
+    collection are not known: they count as given whenever the ledger holds collections or mandates, so nothing is
+    called not checked on a guess."""
     if files:
         kinds = {f.get("kind") if f.get("format") == "csv" else f.get("format") for f in files}
-        return {"invoices": "invoices" in kinds,
-                "failures": bool(kinds & {"failed_collections", "pain.002", "camt.054", "camt.053"}),
-                "mandates": "mandates" in kinds, "bank": bool(kinds & {"bank", "camt.053"})}
-    return {"invoices": bool(store and store.get("invoices")), "failures": bool(collections),
-            "mandates": bool(mandates), "bank": bool(bank)}
+        out = {"invoices": "invoices" in kinds,
+               "failures": bool(kinds & {"failed_collections", "pain.002", "camt.054", "camt.053"}),
+               "mandates": "mandates" in kinds, "bank": bool(kinds & {"bank", "camt.053"}),
+               "rejections": bool(kinds & {"pain.002", "failed_collections"}),
+               "returns": bool(kinds & {"camt.053", "camt.054", "failed_collections"}),
+               "collected": bool(kinds & {"camt.053", "camt.054"})}
+        out["collections"] = out["failures"]
+        out["last_collection"] = out["collections"] or any(m.get("last_collection_date") for m in mandates or [])
+        return out
+    return full({"invoices": bool(store and store.get("invoices")), "failures": bool(collections),
+                 "mandates": bool(mandates), "bank": bool(bank)})
+
+
+def full(source):
+    """A sources dict with every key. A key that is left out follows the export it belongs to."""
+    s = dict(source)
+    for k in ("invoices", "failures", "mandates", "bank"):
+        s[k] = bool(s.get(k))
+    for k in ("rejections", "returns", "collected", "collections"):
+        s[k] = bool(s.get(k, s["failures"]))
+    s["last_collection"] = bool(s.get("last_collection", s["mandates"]))
+    return s
+
+
+def missing(source, needs):
+    """The first export in `needs` that `source` lacks, or None when all of them are there."""
+    for n in needs:
+        if not source.get(n):
+            return n
+    return None
 
 
 def not_checked(source, lang="en"):
     return NOT_CHECKED[_lang(lang)][source]
+
+
+def _join(items, word):
+    items = list(items)
+    return items[0] if len(items) == 1 else "%s %s %s" % (", ".join(items[:-1]), word, items[-1])
+
+
+def not_counted(parts, lang="en"):
+    """parts: (export, label) for each part that was not checked. One sentence per missing export, in that order:
+    "Not checked: no invoice list in your exports. Not counted for that reason: customers and open receivables." """
+    lang = _lang(lang)
+    groups = {}
+    for need, label in parts:
+        groups.setdefault(need, []).append(label)
+    return [NOT_COUNTED[lang].format(line=not_checked(need, lang), labels=_join(labels, AND[lang]))
+            for need, labels in groups.items()]
 
 
 # --------------------------------------------------------------------------- reason codes
@@ -269,8 +350,23 @@ def day_stats(collections):
                        if covered else None)}
 
 
+# What a missing kind of failure file leaves out of the count.
+KIND_LABELS = {
+    "en": {"rejections": "collections rejected or refused before the collection date",
+           "returns": "collections returned or refunded after the collection date"},
+    "nl": {"rejections": "domiciliëringen die vóór de domiciliëringsdatum geweigerd werden",
+           "returns": "domiciliëringen die na de domiciliëringsdatum teruggestort of terugbetaald werden"},
+    "fr": {"rejections": "prélèvements rejetés ou refusés avant la date de prélèvement",
+           "returns": "prélèvements retournés ou remboursés après la date de prélèvement"},
+}
+
+
 def decode(collections, lang="en", source=None):
+    """Failed collections by reason code. source: sources() (else read from the ledger). With a failure file of one
+    kind only (a pain.002 holds rejections, a camt statement holds returns), the other kind is named in
+    `not_counted`. Without the collections that went through, the failure rate per day is not checked."""
     lang = _lang(lang)
+    source = full(source) if source is not None else sources(None, collections=collections)
     failed = [c for c in collections if c["status"] == "failed"]
     codes = rcodes(lang)
     labels = LABELS[lang]
@@ -339,7 +435,7 @@ def decode(collections, lang="en", source=None):
                  key=lambda kv: (-kv[1]["rate_pct"], int(kv[0])))[:3]
     out = {
         "version": VERSION, "check": "failure-decoder",
-        "checked": bool(collections) if source is None else bool(source),
+        "checked": source["failures"],
         "total": {"count": total_n, "amount": euros(total_c), "amount_unknown_count": total_unknown},
         "period": {"from": str(min(d for d in dates if d)) if any(dates) else None,
                    "to": str(max(d for d in dates if d)) if any(dates) else None,
@@ -362,9 +458,19 @@ def decode(collections, lang="en", source=None):
         "unknown_codes": sorted(r["code"] for r in rows if r["code"] and not r["known"]),
         "language": lang,
         "twikey": claims.line("failure-decoder", lang),
+        "kinds_checked": {k: source[k] for k in ("rejections", "returns")},
+        "not_counted": [],
     }
     if not out["checked"]:
         out["not_checked"] = not_checked("failures", lang)
+        out.update({"total": None, "period": None, "days_of_month_overall": None})
+        return out
+    out["not_counted"] = not_counted([(k, KIND_LABELS[lang][k]) for k in ("rejections", "returns")
+                                      if not source[k]], lang)
+    if not source["collected"]:
+        # no collections that went through: nothing to hold the failures against, so no rate per day
+        out["days_of_month_overall"] = None
+        out["days_of_month_not_checked"] = not_checked("collected", lang)
     return out
 
 
@@ -418,6 +524,9 @@ def mandate_health(mandates, collections, on, lang="en", source=None):
     An expired mandate carries `counted_from`: the last presentation before the 36 months without one (a date
     from the collections or the mandate list's last collection). Presentations after the expiry date are
     counted in `presented_after_expiry`, the failed ones among them in `failed_after_expiry`.
+
+    source: sources(). An issue that needs an export besides the mandate list (ISSUE_NEEDS) is null without it, and
+    named in `not_checked_issues` and `not_counted`. Without source every issue counts as checked.
     """
     lang = _lang(lang)
     by_code = {}
@@ -514,9 +623,14 @@ def mandate_health(mandates, collections, on, lang="en", source=None):
 
     for k in out:
         out[k].sort(key=lambda i: (i.get("mandate") or "", i.get("customer") or ""))
+    src = full(source) if source is not None else None
+    # Issues that need more than the mandate list. Without that export they are not checked: null, never [].
+    skipped = {}
+    if src and src["mandates"]:
+        skipped = {k: missing(src, needs) for k, needs in ISSUE_NEEDS.items() if missing(src, needs)}
     result = {
         "version": VERSION, "check": "mandate-health", "on": str(on), "rule": RULES_36[lang],
-        "checked": bool(mandates) if source is None else bool(source),
+        "checked": bool(mandates) if src is None else src["mandates"],
         "rows": len(mandates), "codes": len(by_code), "cancelled": cancelled,
         "core": sum(1 for m in mandates if m.get("scheme") == "CORE"),
         "b2b": sum(1 for m in mandates if m.get("scheme") == "B2B"),
@@ -529,15 +643,46 @@ def mandate_health(mandates, collections, on, lang="en", source=None):
         "failed_amount_on": {k: at_stake(v) for k, v in out.items() if k not in ("duplicate_reference",
                                                                                    "possible_duplicate")},
         "twikey": claims.line("mandate-health", lang),
+        "not_checked_issues": {k: not_checked(need, lang) for k, need in skipped.items()},
+        "not_counted": not_counted([(need, ISSUE_LABELS[lang][k]) for k, need in skipped.items()], lang),
     }
+    for k in skipped:
+        result["issues"][k] = result["counts"][k] = None
+        result["failed_amount_on"].pop(k, None)
+    if "expired" in skipped or "expiring_90_days" in skipped:
+        result["to_renew"] = None
     if not result["checked"]:
         result["not_checked"] = not_checked("mandates", lang)
+        # nothing was counted: null, never zero
+        result.update({k: None for k in ("rows", "codes", "cancelled", "core", "b2b", "scheme_unknown", "to_renew")})
+        result.update({"issues": dict.fromkeys(ISSUES), "counts": dict.fromkeys(ISSUES), "failed_amount_on": {}})
     return result
+
+
+# The exports an issue needs besides the mandate list: the 36-month rule needs a date of last collection, a return
+# booked without its collection date needs a file with returns, and a change of account needs collections.
+ISSUE_NEEDS = {"expired": ("last_collection",), "expiring_90_days": ("last_collection",),
+               "unused_since_signing": ("last_collection",), "last_collection_unknown": ("returns",),
+               "iban_changed": ("collections",)}
+ISSUE_LABELS = {
+    "en": {"expired": "expired mandates", "expiring_90_days": "mandates that expire within 90 days",
+           "unused_since_signing": "mandates never used since signing",
+           "last_collection_unknown": "mandates whose last collection is unknown",
+           "iban_changed": "collections from more than one account"},
+    "nl": {"expired": "verlopen mandaten", "expiring_90_days": "mandaten die binnen 90 dagen verlopen",
+           "unused_since_signing": "mandaten die nooit gebruikt zijn sinds de ondertekening",
+           "last_collection_unknown": "mandaten waarvan de laatste domiciliëring onbekend is",
+           "iban_changed": "domiciliëringen van meer dan één rekening"},
+    "fr": {"expired": "mandats expirés", "expiring_90_days": "mandats qui expirent dans les 90 jours",
+           "unused_since_signing": "mandats jamais utilisés depuis la signature",
+           "last_collection_unknown": "mandats dont le dernier prélèvement est inconnu",
+           "iban_changed": "prélèvements depuis plus d'un compte"},
+}
 
 
 def to_renew(issues):
     """The one definition of mandates to renew: expired under the 36-month rule, and expiring within 90 days."""
-    return issues["expired"] + issues["expiring_90_days"]
+    return (issues["expired"] or []) + (issues["expiring_90_days"] or [])
 
 
 # --------------------------------------------------------------------------- matching
@@ -689,11 +834,21 @@ def match(store, bank, lang="en", source=None):
                                 "mentions_open_invoice": extra["unmatched_mentions_open_invoice"]})
     lang = _lang(lang)
     result["method"] = MATCH_METHOD[lang]
-    result["checked"] = bool(bank) if source is None else bool(source)
-    if not result["checked"]:
-        result["not_checked"] = not_checked("bank", lang)
+    # Matching needs both the bank statement and the invoices. Without one of them, no group was checked: null.
+    src = full(source) if source is not None else sources(None, store, None, None, bank)
+    need = missing(src, ("bank", "invoices"))
+    result["checked"] = need is None
+    if need:
+        result["not_checked"] = not_checked(need, lang)
+        result["not_checked_export"] = need
+        result.update(dict.fromkeys(MATCH_GROUPS))
+        if need == "bank":
+            result["credit_lines"] = result["period"] = None
     result["twikey"] = claims.line("unmatched-payments", lang)
     return result
+
+
+MATCH_GROUPS = ("matched", "paid_but_open", "partial", "bundled", "double", "overpaid", "unmatched", "other_receipts")
 
 
 MATCH_METHOD = {
@@ -779,7 +934,19 @@ def dso_90d(store, cfg, on):
     return round(open_ar / billed * 90, 1) if billed else None
 
 
-def terms(store, cfg, on, collections=None, lang="en"):
+def terms(store, cfg, on, collections=None, lang="en", source=None):
+    """Terms against reality and payer profiles. source: sources() (else read from the ledger). Without the invoice
+    list nothing is checked. Without a file with failed collections, the profile "pays after failed collections" is
+    not checked (null) and clockwork says so in its rule."""
+    lang = _lang(lang)
+    src = full(source) if source is not None else sources(None, store, None, collections, None)
+    if not src["invoices"]:
+        return {"version": VERSION, "check": "terms-vs-reality", "as_of": str(on), "checked": False,
+                "not_checked": not_checked("invoices", lang), "profiles": None, "rules": dict(PROFILE_RULES[lang]),
+                "customers": None, "open_receivables": None, "overdue": None, "aging": None, "dso_90d": None,
+                "terms_days_90d": None, "dso_minus_terms": None, "dso_trend": None,
+                "not_checked_profiles": {}, "not_counted": [], "method": TERMS_METHOD[lang],
+                "twikey": [claims.line("terms-vs-reality", lang), claims.line("payer-profiles", lang)]}
     calc.TODAY = on
     view = calc_view(store)
     stats = calc.customer_stats(view, cfg)
@@ -830,11 +997,21 @@ def terms(store, cfg, on, collections=None, lang="en"):
     ds = calc.dso(view, cfg)
     dso = dso_90d(store, cfg, on)
     own = own_terms_90d(store, cfg, on)
-    lang = _lang(lang)
+    rules = dict(PROFILE_RULES[lang])
+    skipped = {}
+    if not src["failures"]:
+        # who pays only after failed collections is not known: those customers are under clockwork
+        skipped["after_failures"] = "failures"
+        profiles["after_failures"] = None
+        rules["clockwork"] = CLOCKWORK_NO_FAILURES[lang]
+        for r in rows:
+            r["failed_collections"] = None
     return {
-        "version": VERSION, "check": "terms-vs-reality", "as_of": str(on),
+        "version": VERSION, "check": "terms-vs-reality", "as_of": str(on), "checked": True,
         "profiles": profiles,
-        "rules": dict(PROFILE_RULES[lang]),
+        "rules": rules,
+        "not_checked_profiles": {k: not_checked(need, lang) for k, need in skipped.items()},
+        "not_counted": not_counted([(need, PROFILE_LABELS[lang][k]) for k, need in skipped.items()], lang),
         "customers": rows,
         "open_receivables": round(sum(r["open_amount"] for r in rows), 2),
         "overdue": round(sum(r["overdue_amount"] for r in rows), 2),
@@ -866,6 +1043,18 @@ PROFILE_RULES = {
            "late_but_pays": "paie en moyenne avec plus de cinq jours de retard",
            "after_failures": "paie en moyenne avec au plus cinq jours de retard, mais a eu des prélèvements échoués",
            "clockwork": "paie en moyenne avec au plus cinq jours de retard, aucun prélèvement échoué"},
+}
+# The clockwork rule when no file with failed collections was given.
+CLOCKWORK_NO_FAILURES = {
+    "en": "pays on average at most five days late, failed collections not checked",
+    "nl": "betaalt gemiddeld hoogstens vijf dagen te laat, mislukte domiciliëringen niet nagekeken",
+    "fr": "paie en moyenne avec au plus cinq jours de retard, prélèvements échoués non vérifiés",
+}
+# A profile in a "Not counted for that reason" sentence.
+PROFILE_LABELS = {
+    "en": {"after_failures": "customers who pay after failed collections"},
+    "nl": {"after_failures": "klanten die betalen na mislukte domiciliëringen"},
+    "fr": {"after_failures": "clients qui paient après des prélèvements échoués"},
 }
 TERMS_METHOD = {
     "en": "Standard aging and DSO formulas. DSO is days sales outstanding: open receivables divided by what was "
@@ -904,11 +1093,13 @@ STEP_SOURCES = {
     "paid_but_open": "match: paid at the bank, still open in the books",
     "late_invoice": "invoices: paid more than seven days after the due date, or open more than seven days past it",
 }
-# The export each item type is counted from: without it, the item type was not checked.
-STEP_NEEDS = {"failed_new_attempt": "failures", "failed_new_mandate": "failures", "failed_conversation": "failures",
-              "failed_own_setup": "failures", "failed_unknown": "failures", "mandate_renew": "mandates",
-              "mandate_fix": "mandates", "unmatched": "bank", "double_payment": "bank", "paid_but_open": "bank",
-              "late_invoice": "invoices"}
+# The exports each item type is counted from: without one of them, the item type was not checked, and the first
+# missing one is named. Matching a payment needs the bank statement and the invoices.
+STEP_NEEDS = {"failed_new_attempt": ("failures",), "failed_new_mandate": ("failures",),
+              "failed_conversation": ("failures",), "failed_own_setup": ("failures",), "failed_unknown": ("failures",),
+              "mandate_renew": ("mandates", "last_collection"), "mandate_fix": ("mandates",),
+              "unmatched": ("bank", "invoices"), "double_payment": ("bank", "invoices"),
+              "paid_but_open": ("bank", "invoices"), "late_invoice": ("invoices",)}
 MANDATE_FIX = ("missing_reference", "missing_signature_date", "signature_missing", "duplicate_reference",
                "possible_duplicate", "iban_changed", "b2b_not_confirmed")
 UNMATCHED = ("unmatched", "partial", "bundled")
@@ -944,25 +1135,32 @@ def manual_steps(lang="en"):
 def steps(store, mandates, collections, bank, on, lang="en", source=None):
     """Per item type: how many items the files hold, and the checklist of manual steps one item asks for when it
     is done by hand. Counted with the other checks: decode, mandate_health, match and late_invoices. An item type
-    whose export is missing (source, see sources()) is not checked: checked false, never counted as zero."""
+    whose export is missing (source, see sources()) is not checked: checked false, and its count is null, never
+    zero."""
     lang = _lang(lang)
-    source = source or sources(None, store, mandates, collections, bank)
-    dec = decode(collections, lang)
-    mand = mandate_health(mandates, collections, on, lang)
-    mat = match(store, bank, lang)
+    source = full(source) if source is not None else sources(None, store, mandates, collections, bank)
+    dec = decode(collections, lang, source)
+    mand = mandate_health(mandates, collections, on, lang, source)
+    mat = match(store, bank, lang, source)
     late = late_invoices(store, on)
     copy_ = manual_steps(lang)
     cats = dec["by_category"]
 
     def failed(*names):
         sel = [cats[c] for c in names if c in cats]
-        return (sum(c["count"] for c in sel), dec["period"]["months"],
+        return (sum(c["count"] for c in sel), (dec["period"] or {}).get("months"),
                 sorted({x for c in sel for x in c["customers"]}))
+
+    def matched(*groups):
+        if not mat["checked"]:
+            return (None, None, [])
+        return (sum(mat[k]["count"] for k in groups), mat["period"]["months"],
+                sorted({c for k in groups for c in mat[k]["customers"]}))
 
     renew = to_renew(mand["issues"])
     fix = {}
     for issue in MANDATE_FIX:
-        for i in mand["issues"][issue]:
+        for i in mand["issues"][issue] or []:
             k = i["mandate"] if i.get("mandate") else ("customer", i.get("customer"))
             fix.setdefault(k, set()).update(i.get("customers") or [i.get("customer")])
     counts = {
@@ -973,10 +1171,9 @@ def steps(store, mandates, collections, bank, on, lang="en", source=None):
         "failed_unknown": failed("bank", "unknown", "unreadable"),
         "mandate_renew": (len(renew), None, sorted({i["customer"] for i in renew if i.get("customer")})),
         "mandate_fix": (len(fix), None, sorted({c for cs in fix.values() for c in cs if c})),
-        "unmatched": (sum(mat[k]["count"] for k in UNMATCHED), mat["period"]["months"],
-                      sorted({c for k in UNMATCHED for c in mat[k]["customers"]})),
-        "double_payment": (mat["double"]["count"], mat["period"]["months"], mat["double"]["customers"]),
-        "paid_but_open": (mat["paid_but_open"]["count"], mat["period"]["months"], mat["paid_but_open"]["customers"]),
+        "unmatched": matched(*UNMATCHED),
+        "double_payment": matched("double"),
+        "paid_but_open": matched("paid_but_open"),
         "late_invoice": (late["count"], late["months"], late["customers"]),
     }
     items = []
@@ -984,22 +1181,26 @@ def steps(store, mandates, collections, bank, on, lang="en", source=None):
         n, months, customers = counts[k]
         months = months or None
         checklist = copy_["items"][k]["checklist"]
-        checked = bool(source.get(STEP_NEEDS[k]))
+        need = missing(source, STEP_NEEDS[k])
+        checked = need is None
+        if not checked:
+            n, months, customers = None, None, []
         item = {"id": k, "label": copy_["items"][k]["label"], "label_one": copy_["items"][k]["label_one"],
                 "checked": checked, "count": n, "months": months,
                 "per_month": round(n / float(months), 1) if months and checked else None,
-                "steps_each": len(checklist), "steps_total": n * len(checklist), "checklist": checklist,
-                "examples": customers[:12], "source": STEP_SOURCES[k]}
+                "steps_each": len(checklist), "steps_total": n * len(checklist) if checked else None,
+                "checklist": checklist, "examples": customers[:12], "source": STEP_SOURCES[k]}
         if not checked:
-            item["not_checked"] = not_checked(STEP_NEEDS[k], lang)
+            item["not_checked"] = not_checked(need, lang)
         items.append(item)
-    items.sort(key=lambda i: (-i["steps_total"], STEP_ITEMS.index(i["id"])))
+    # biggest steps_total first, the item types not checked last
+    items.sort(key=lambda i: (not i["checked"], -(i["steps_total"] or 0), STEP_ITEMS.index(i["id"])))
     timed = [i for i in items if i["per_month"] is not None]
     return {
         "version": VERSION, "check": "manual-steps", "as_of": str(on), "language": lang,
         "items": items,
-        "total_items": sum(i["count"] for i in items),
-        "total_steps": sum(i["steps_total"] for i in items),
+        "total_items": sum(i["count"] for i in items if i["checked"]),
+        "total_steps": sum(i["steps_total"] for i in items if i["checked"]),
         # the per-month totals add up the exact per-month values, rounded once, for the item types with a period
         "per_month_total": round(sum(i["count"] / float(i["months"]) for i in timed), 1) if timed else None,
         "per_month_steps_total": (round(sum(i["steps_total"] / float(i["months"]) for i in timed), 1)
@@ -1030,7 +1231,41 @@ EXISTING_MANDATES = {
 }
 
 
-def golive(store, collections, mand, term, tool=None, lang="en"):
+# A go-live fact in a "Not counted for that reason" sentence, and the export it needs.
+GOLIVE_NEEDS = (("customers", "invoices"), ("invoices_per_month", "invoices"), ("open_receivables", "invoices"),
+                ("profiles", "invoices"), ("mandates", "mandates"), ("mandates_to_renew", "last_collection"),
+                ("failed_per_month", "failures"), ("after_failures", "failures"))
+GOLIVE_LABELS = {
+    "en": {"customers": "customers", "invoices_per_month": "invoices a month", "open_receivables": "open receivables",
+           "profiles": "payer profiles", "mandates": "mandates",
+           "mandates_to_renew": "mandates to renew and mandates never used since signing",
+           "failed_per_month": "failed collections a month",
+           "after_failures": "customers who pay after failed collections"},
+    "nl": {"customers": "klanten", "invoices_per_month": "facturen per maand",
+           "open_receivables": "openstaande vorderingen", "profiles": "betaalprofielen", "mandates": "mandaten",
+           "mandates_to_renew": "te vernieuwen mandaten en mandaten die nooit gebruikt zijn sinds de ondertekening",
+           "failed_per_month": "mislukte domiciliëringen per maand",
+           "after_failures": "klanten die betalen na mislukte domiciliëringen"},
+    "fr": {"customers": "clients", "invoices_per_month": "factures par mois", "open_receivables": "créances ouvertes",
+           "profiles": "profils de payeur", "mandates": "mandats",
+           "mandates_to_renew": "mandats à renouveler et mandats jamais utilisés depuis la signature",
+           "failed_per_month": "prélèvements échoués par mois",
+           "after_failures": "clients qui paient après des prélèvements échoués"},
+}
+
+
+def golive(store, collections, mand, term, tool=None, lang="en", source=None):
+    """The facts for the go-live plan. A fact whose export is missing is null and named in `not_checked`, never
+    zero. source: sources() (else read from the ledger and from the mandate and terms checks)."""
+    lang = _lang(lang)
+    src = full(source) if source is not None else sources(None, store, None, collections, None)
+    have = {"invoices": src["invoices"] and term.get("checked", True), "mandates": mand["checked"],
+            "last_collection": mand["checked"] and mand["to_renew"] is not None, "failures": src["failures"]}
+    skipped = {fact: need for fact, need in GOLIVE_NEEDS if not have[need]}
+    if "mandates" in skipped:
+        skipped.pop("mandates_to_renew", None)  # already left out with the mandates
+    if "profiles" in skipped:
+        skipped.pop("after_failures", None)
     invs = list(store["invoices"].values())
     customers = {i["customer"]["customerNumber"] for i in invs}
     dd = {c["customer"] for c in collections if c["status"] == "collected" and c.get("customer")}
@@ -1046,12 +1281,14 @@ def golive(store, collections, mand, term, tool=None, lang="en"):
         "mandates_core": mand["core"], "mandates_b2b": mand["b2b"],
         # expired and expiring within 90 days (to_renew), never the mandates unused since signing
         "mandates_to_renew": len(to_renew(mand["issues"])),
-        "mandates_never_used": len(mand["issues"]["unused_since_signing"]),
-        "b2b_not_confirmed": len(mand["issues"]["b2b_not_confirmed"]),
+        "mandates_never_used": len(mand["issues"]["unused_since_signing"] or []),
+        "b2b_not_confirmed": len(mand["issues"]["b2b_not_confirmed"] or []),
         "failed_per_month": round(sum(int(c.get("batch_count") or 1) for c in failed) / float(fmonths), 1)
                             if fmonths else None,
         "open_receivables": term["open_receivables"], "overdue": term["overdue"],
-        "profiles": {k: v["count"] for k, v in term["profiles"].items()},
+        "profiles": {k: v["count"] if v is not None else None for k, v in (term["profiles"] or {}).items()},
+        "not_checked": {fact: not_checked(need, lang) for fact, need in skipped.items()},
+        "not_counted": not_counted([(need, GOLIVE_LABELS[lang][fact]) for fact, need in skipped.items()], lang),
         "questions": list(GOLIVE_QUESTIONS[_lang(lang)]),
         "existing_mandates": EXISTING_MANDATES.get(lang, EXISTING_MANDATES["en"]),
         "twikey": [claims.line(i, lang) for i in GOLIVE_LINES],
@@ -1060,6 +1297,15 @@ def golive(store, collections, mand, term, tool=None, lang="en"):
         # The one call to action. The report ends with it. go-live-plan.md does not repeat it.
         "demo": claims.line("demo", lang),
     }
+    # null, never zero, for each fact whose export is missing
+    nulls = {"customers": ("customers", "direct_debit_customers"), "invoices_per_month": ("invoices_per_month",),
+             "open_receivables": ("open_receivables", "overdue"), "profiles": ("profiles",),
+             "mandates": ("mandates_core", "mandates_b2b", "mandates_to_renew", "mandates_never_used",
+                          "b2b_not_confirmed"),
+             "mandates_to_renew": ("mandates_to_renew", "mandates_never_used"), "failed_per_month": ("failed_per_month",)}
+    for fact in skipped:
+        for k in nulls.get(fact, ()):
+            out[k] = None
     if tool:
         hits = claims.partner_matches(tool)
         out["tool"] = {"asked": tool, "listed_as": hits,

@@ -490,7 +490,7 @@ class DemoTest(unittest.TestCase):
         self.assertLess(text.index(demo), text.index("---"))
         self.assertNotIn("contact.html", text)
         self.assertIn("file 5: factuurhistoriek.csv", text)  # the report, on the user's computer, names the files
-        self.assertTrue(text.rstrip().endswith("Twikey Payment X-ray 0.2.0. The numbers come from your own exports."))
+        self.assertTrue(text.rstrip().endswith("Twikey Payment X-ray 0.2.1. The numbers come from your own exports."))
         code, out2, _ = self.box.cli("report")
         self.assertNotEqual(out2.strip(), path)  # a second report never overwrites the first
 

@@ -31,8 +31,10 @@ folder the X-ray guard runs only X-ray's own commands.
   an open invoice number (a deposit refund, a loan). Not invoice payments: mention them apart, never as a leak.
 - `method`: how matching works. A payment never settles an invoice issued after it. X-ray never guesses: a
   payment that fits nothing stays unmatched.
-- `checked`: `false` without a bank statement. Then `not_checked` holds the line that says so. Give it as it is,
-  never that every payment matched.
+- `checked`: `false` without a bank statement or without the invoices. Then every group above is `null` and
+  `not_checked` holds the line that names the missing export. With a bank statement but no invoices,
+  `credit_lines` still counts the incoming payments. Give the line as it is, never that every payment matched or
+  that none did.
 
 ## How to present it
 

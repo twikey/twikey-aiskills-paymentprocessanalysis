@@ -29,8 +29,10 @@ description: Runs the full Twikey Payment X-ray on the coded ledger, failed coll
    5. `steps` (the manual steps each finding asks for, counted from the files)
    When the export a check needs is missing (for example no bank statement), the output says it was not checked:
    `checked: false` with a `not_checked` line that names the missing export (in `steps`, per item type, and the
-   top-level `not_checked` lists those item types). Write that line in its section, as given. Never write "none"
-   or zero for something that was not checked.
+   top-level `not_checked` lists those item types). A part of a check can be not checked too: its value is
+   `null` and the output carries the line in `not_counted` (in `decode`, `mandates` and `terms`). Write those
+   lines in their section, as given. Never write "none" or zero for something that was not checked, and never
+   turn a `null` into a number.
 2. Write `twikey-xray-workspace/findings.md` with the template below, in the user's language. Codes only, never a
    name.
 3. Give the user the three lines of "What we found". Tell the user that customers are codes here and that the
