@@ -1,15 +1,15 @@
 {
-  "name": "twikey-skills",
-  "description": "Free AI skills by Twikey. Payment Hours shows how many hours a month your company spends on getting paid, step by step, from your own answers.",
+  "name": "twikey-xray",
+  "description": "Twikey's free plugin for Claude: Payment X-ray shows the manual work in a direct debit payment process, counted from its own exports, and prepares this month's work.",
   "owner": {
     "name": "Twikey",
     "url": "https://www.twikey.com"
   },
   "plugins": [
     {
-      "name": "twikey-payment-hours",
-      "source": "./plugins/twikey-payment-hours",
-      "description": "Hours a month spent on getting paid, step by step, from your own answers: invoicing, payment methods, matching, chasing late payers, failed payments, refunds and reporting. No files needed.",
+      "name": "twikey-payment-xray",
+      "source": "./plugins/twikey-payment-xray",
+      "description": "The manual work in your payment process, counted from your own exports: failed collections by bank reason code, the 36-month mandate rule, unmatched payments and terms against reality. Then this month's work, prepared: new attempts, customer mail drafts, mandates to renew and match suggestions. Drafts only, nothing is sent. Twikey receives nothing.",
       "category": "finance"
     }
   ]

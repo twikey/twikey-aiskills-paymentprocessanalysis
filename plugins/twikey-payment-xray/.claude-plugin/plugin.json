@@ -1,0 +1,25 @@
+{
+  "name": "twikey-payment-xray",
+  "displayName": "Twikey Payment X-ray",
+  "version": "0.2.0",
+  "description": "Shows the manual work in your payment process, counted from your own exports, and prepares this month's work for you: failed collections by bank reason code, mandates past the 36-month rule, payments that match no invoice and payment terms against reality, then collections worth a new attempt, customer mail drafts, mandates to renew and match suggestions. Runs on your own computer, never sends anything and never writes a bank file. Twikey receives nothing.",
+  "author": {
+    "name": "Twikey",
+    "url": "https://www.twikey.com"
+  },
+  "homepage": "https://www.twikey.com",
+  "license": "MIT",
+  "keywords": [
+    "twikey",
+    "sepa",
+    "direct debit",
+    "failed collections",
+    "reason codes",
+    "mandates",
+    "reconciliation",
+    "accounts receivable",
+    "manual work",
+    "camt.053",
+    "pain.002"
+  ]
+}

@@ -1,0 +1,486 @@
+{
+ "_about": "Customer mail drafts for twikey_xray.py month, per language. Drafts only: the user checks them and sends them. One mail per customer. Placeholders: {customer}, {invoices}, {amount}, {failure_date}, {new_date}, {mandate}, {expiry_date}, {company}. In month.json they hold codes, in the work pack the real values. {invoices} is one line per open debt, built from item (or item_no_invoice when the invoice is not known), or from item_repeat when the collection was presented more than once, or from item_part_paid when part of it was paid since (the line names what is still open). body_many (and subject_many, where there is one) replaces body (and subject) when the mail lists more than one debt. new_attempt asks for funds (AM04, insufficient funds), new_attempt_neutral is for the other reasons worth a new attempt. amount_unknown, new_date_unknown and mandate_unknown are literal placeholders the user fills in. The body is a list of lines.",
+ "en": {
+  "company": "[your company name]",
+  "new_date_unknown": "[date of the new collection]",
+  "amount_unknown": "[amount]",
+  "mandate_unknown": "[mandate reference]",
+  "item": "- invoice {invoice}: {amount}, collection of {date}",
+  "item_no_invoice": "- {amount}, collection of {date}",
+  "item_repeat": "- invoice {invoice}: {amount}, presented {times}, last on {date}",
+  "item_repeat_no_invoice": "- {amount}, presented {times}, last on {date}",
+  "item_part_paid": "- invoice {invoice}: {open} of {amount} still open, collection of {date}",
+  "times": ["", "once", "twice", "three times", "four times", "five times", "six times", "seven times", "eight times",
+            "nine times", "ten times"],
+  "times_n": "{n} times",
+  "and": "and",
+  "templates": {
+   "new_attempt": {
+    "subject": "New collection of {amount} on {new_date}",
+    "body": [
+     "Hello {customer},",
+     "",
+     "We could not collect the following by direct debit:",
+     "{invoices}",
+     "",
+     "We will collect {amount} again on {new_date}. Could you make sure there are enough funds in your account that day?",
+     "",
+     "Thank you,",
+     "{company}"
+    ],
+    "subject_many": "New collections of {amount} in total on {new_date}",
+    "body_many": [
+     "Hello {customer},",
+     "",
+     "We could not collect the following by direct debit:",
+     "{invoices}",
+     "",
+     "We will collect these again on {new_date}, {amount} in total. Could you make sure there are enough funds in your account that day?",
+     "",
+     "Thank you,",
+     "{company}"
+    ]
+   },
+   "new_attempt_neutral": {
+    "subject": "New collection of {amount} on {new_date}",
+    "body": [
+     "Hello {customer},",
+     "",
+     "We could not collect the following by direct debit:",
+     "{invoices}",
+     "",
+     "We will collect {amount} again on {new_date}. If anything changed on your side, just reply to this email.",
+     "",
+     "Thank you,",
+     "{company}"
+    ],
+    "subject_many": "New collections of {amount} in total on {new_date}",
+    "body_many": [
+     "Hello {customer},",
+     "",
+     "We could not collect the following by direct debit:",
+     "{invoices}",
+     "",
+     "We will collect these again on {new_date}, {amount} in total. If anything changed on your side, just reply to this email.",
+     "",
+     "Thank you,",
+     "{company}"
+    ]
+   },
+   "new_mandate": {
+    "subject": "Please sign a new direct debit mandate",
+    "body": [
+     "Hello {customer},",
+     "",
+     "We could not collect the following by direct debit on your current mandate:",
+     "{invoices}",
+     "",
+     "To keep paying by direct debit, please sign a new mandate here: [link to your mandate form]",
+     "",
+     "Once it is signed, we will collect {amount} again.",
+     "",
+     "Thank you,",
+     "{company}"
+    ],
+    "body_many": [
+     "Hello {customer},",
+     "",
+     "We could not collect the following by direct debit on your current mandate:",
+     "{invoices}",
+     "",
+     "To keep paying by direct debit, please sign a new mandate here: [link to your mandate form]",
+     "",
+     "Once it is signed, we will collect these again, {amount} in total.",
+     "",
+     "Thank you,",
+     "{company}"
+    ]
+   },
+   "b2b_register": {
+    "subject": "Please register B2B mandate {mandate} at your bank",
+    "body": [
+     "Hello {customer},",
+     "",
+     "Your bank rejected the following direct debit, because B2B mandate {mandate} is not registered there:",
+     "{invoices}",
+     "",
+     "Could you ask your bank to register it? Then we will present the collection of {amount} again.",
+     "",
+     "Thank you,",
+     "{company}"
+    ],
+    "body_many": [
+     "Hello {customer},",
+     "",
+     "Your bank rejected the following direct debits, because B2B mandate {mandate} is not registered there:",
+     "{invoices}",
+     "",
+     "Could you ask your bank to register it? Then we will present the collections of {amount} again.",
+     "",
+     "Thank you,",
+     "{company}"
+    ]
+   },
+   "conversation": {
+    "subject": "How would you like to pay {amount}?",
+    "body": [
+     "Hello {customer},",
+     "",
+     "We saw that our direct debit for the following was refunded or refused:",
+     "{invoices}",
+     "",
+     "How would you like to pay {amount}? You can simply reply to this email.",
+     "",
+     "Kind regards,",
+     "{company}"
+    ],
+    "body_many": [
+     "Hello {customer},",
+     "",
+     "We saw that our direct debits for the following were refunded or refused:",
+     "{invoices}",
+     "",
+     "How would you like to pay {amount}? You can simply reply to this email.",
+     "",
+     "Kind regards,",
+     "{company}"
+    ]
+   },
+   "mandate_renewal": {
+    "subject": "Please renew your direct debit mandate",
+    "body": [
+     "Hello {customer},",
+     "",
+     "Your direct debit mandate {mandate} with us expired on {expiry_date}, 36 months after the last collection on it.",
+     "",
+     "To keep paying by direct debit, please sign a new mandate here: [link to your mandate form]",
+     "",
+     "Thank you,",
+     "{company}"
+    ]
+   }
+  }
+ },
+ "nl": {
+  "company": "[naam van je bedrijf]",
+  "new_date_unknown": "[datum van de nieuwe domiciliëring]",
+  "amount_unknown": "[bedrag]",
+  "mandate_unknown": "[mandaatreferentie]",
+  "item": "- factuur {invoice}: {amount}, domiciliëring van {date}",
+  "item_no_invoice": "- {amount}, domiciliëring van {date}",
+  "item_repeat": "- factuur {invoice}: {amount}, {times} aangeboden, laatst op {date}",
+  "item_repeat_no_invoice": "- {amount}, {times} aangeboden, laatst op {date}",
+  "item_part_paid": "- factuur {invoice}: {open} van {amount} staat nog open, domiciliëring van {date}",
+  "times": ["", "één keer", "twee keer", "drie keer", "vier keer", "vijf keer", "zes keer", "zeven keer", "acht keer",
+            "negen keer", "tien keer"],
+  "times_n": "{n} keer",
+  "and": "en",
+  "templates": {
+   "new_attempt": {
+    "subject": "Nieuwe domiciliëring van {amount} op {new_date}",
+    "body": [
+     "Beste {customer},",
+     "",
+     "We konden het volgende niet innen via domiciliëring:",
+     "{invoices}",
+     "",
+     "We bieden de domiciliëring van {amount} opnieuw aan op {new_date}. Wil je ervoor zorgen dat er die dag voldoende saldo op je rekening staat?",
+     "",
+     "Bedankt,",
+     "{company}"
+    ],
+    "subject_many": "Nieuwe domiciliëringen van samen {amount} op {new_date}",
+    "body_many": [
+     "Beste {customer},",
+     "",
+     "We konden het volgende niet innen via domiciliëring:",
+     "{invoices}",
+     "",
+     "We bieden deze domiciliëringen van samen {amount} opnieuw aan op {new_date}. Wil je ervoor zorgen dat er die dag voldoende saldo op je rekening staat?",
+     "",
+     "Bedankt,",
+     "{company}"
+    ]
+   },
+   "new_attempt_neutral": {
+    "subject": "Nieuwe domiciliëring van {amount} op {new_date}",
+    "body": [
+     "Beste {customer},",
+     "",
+     "We konden het volgende niet innen via domiciliëring:",
+     "{invoices}",
+     "",
+     "We bieden de domiciliëring van {amount} opnieuw aan op {new_date}. Is er bij jou iets veranderd? Antwoord dan gewoon op deze mail.",
+     "",
+     "Bedankt,",
+     "{company}"
+    ],
+    "subject_many": "Nieuwe domiciliëringen van samen {amount} op {new_date}",
+    "body_many": [
+     "Beste {customer},",
+     "",
+     "We konden het volgende niet innen via domiciliëring:",
+     "{invoices}",
+     "",
+     "We bieden deze domiciliëringen van samen {amount} opnieuw aan op {new_date}. Is er bij jou iets veranderd? Antwoord dan gewoon op deze mail.",
+     "",
+     "Bedankt,",
+     "{company}"
+    ]
+   },
+   "new_mandate": {
+    "subject": "Wil je een nieuw domiciliëringsmandaat tekenen?",
+    "body": [
+     "Beste {customer},",
+     "",
+     "We konden het volgende niet innen via domiciliëring op je huidige mandaat:",
+     "{invoices}",
+     "",
+     "Wil je verder betalen via domiciliëring? Teken dan hier een nieuw mandaat: [link naar je mandaatformulier]",
+     "",
+     "Zodra het getekend is, bieden we de domiciliëring van {amount} opnieuw aan.",
+     "",
+     "Bedankt,",
+     "{company}"
+    ],
+    "body_many": [
+     "Beste {customer},",
+     "",
+     "We konden het volgende niet innen via domiciliëring op je huidige mandaat:",
+     "{invoices}",
+     "",
+     "Wil je verder betalen via domiciliëring? Teken dan hier een nieuw mandaat: [link naar je mandaatformulier]",
+     "",
+     "Zodra het getekend is, bieden we deze domiciliëringen van samen {amount} opnieuw aan.",
+     "",
+     "Bedankt,",
+     "{company}"
+    ]
+   },
+   "b2b_register": {
+    "subject": "Wil je B2B-mandaat {mandate} laten registreren bij je bank?",
+    "body": [
+     "Beste {customer},",
+     "",
+     "Je bank heeft de volgende domiciliëring geweigerd, omdat B2B-mandaat {mandate} daar niet geregistreerd is:",
+     "{invoices}",
+     "",
+     "Wil je je bank vragen om het te registreren? Dan bieden we de domiciliëring van {amount} opnieuw aan.",
+     "",
+     "Bedankt,",
+     "{company}"
+    ],
+    "body_many": [
+     "Beste {customer},",
+     "",
+     "Je bank heeft de volgende domiciliëringen geweigerd, omdat B2B-mandaat {mandate} daar niet geregistreerd is:",
+     "{invoices}",
+     "",
+     "Wil je je bank vragen om het te registreren? Dan bieden we de domiciliëringen van samen {amount} opnieuw aan.",
+     "",
+     "Bedankt,",
+     "{company}"
+    ]
+   },
+   "conversation": {
+    "subject": "Hoe wil je {amount} betalen?",
+    "body": [
+     "Beste {customer},",
+     "",
+     "We zagen dat onze domiciliëring voor het volgende terugbetaald of geweigerd is:",
+     "{invoices}",
+     "",
+     "Hoe wil je {amount} betalen? Je kunt gewoon op deze mail antwoorden.",
+     "",
+     "Met vriendelijke groeten,",
+     "{company}"
+    ],
+    "body_many": [
+     "Beste {customer},",
+     "",
+     "We zagen dat onze domiciliëringen voor het volgende terugbetaald of geweigerd zijn:",
+     "{invoices}",
+     "",
+     "Hoe wil je {amount} betalen? Je kunt gewoon op deze mail antwoorden.",
+     "",
+     "Met vriendelijke groeten,",
+     "{company}"
+    ]
+   },
+   "mandate_renewal": {
+    "subject": "Wil je je domiciliëringsmandaat vernieuwen?",
+    "body": [
+     "Beste {customer},",
+     "",
+     "Je domiciliëringsmandaat {mandate} bij ons is verlopen op {expiry_date}, 36 maanden na de laatste domiciliëring op dit mandaat.",
+     "",
+     "Wil je verder betalen via domiciliëring? Teken dan hier een nieuw mandaat: [link naar je mandaatformulier]",
+     "",
+     "Bedankt,",
+     "{company}"
+    ]
+   }
+  }
+ },
+ "fr": {
+  "company": "[nom de votre entreprise]",
+  "new_date_unknown": "[date du nouveau prélèvement]",
+  "amount_unknown": "[montant]",
+  "mandate_unknown": "[référence du mandat]",
+  "item": "- facture {invoice} : {amount}, prélèvement du {date}",
+  "item_no_invoice": "- {amount}, prélèvement du {date}",
+  "item_repeat": "- facture {invoice} : {amount}, présenté {times}, la dernière fois le {date}",
+  "item_repeat_no_invoice": "- {amount}, présenté {times}, la dernière fois le {date}",
+  "item_part_paid": "- facture {invoice} : {open} sur {amount} encore ouverts, prélèvement du {date}",
+  "times": ["", "une fois", "deux fois", "trois fois", "quatre fois", "cinq fois", "six fois", "sept fois", "huit fois",
+            "neuf fois", "dix fois"],
+  "times_n": "{n} fois",
+  "and": "et",
+  "templates": {
+   "new_attempt": {
+    "subject": "Nouveau prélèvement de {amount} le {new_date}",
+    "body": [
+     "Bonjour {customer},",
+     "",
+     "Nous n'avons pas pu encaisser ce qui suit par prélèvement :",
+     "{invoices}",
+     "",
+     "Nous présenterons à nouveau le prélèvement de {amount} le {new_date}. Pourriez-vous veiller à ce que votre compte soit suffisamment approvisionné ce jour-là ?",
+     "",
+     "Merci,",
+     "{company}"
+    ],
+    "subject_many": "Nouveaux prélèvements le {new_date}, pour un total de {amount}",
+    "body_many": [
+     "Bonjour {customer},",
+     "",
+     "Nous n'avons pas pu encaisser ce qui suit par prélèvement :",
+     "{invoices}",
+     "",
+     "Nous présenterons à nouveau ces prélèvements le {new_date}, pour un total de {amount}. Pourriez-vous veiller à ce que votre compte soit suffisamment approvisionné ce jour-là ?",
+     "",
+     "Merci,",
+     "{company}"
+    ]
+   },
+   "new_attempt_neutral": {
+    "subject": "Nouveau prélèvement de {amount} le {new_date}",
+    "body": [
+     "Bonjour {customer},",
+     "",
+     "Nous n'avons pas pu encaisser ce qui suit par prélèvement :",
+     "{invoices}",
+     "",
+     "Nous présenterons à nouveau le prélèvement de {amount} le {new_date}. Si quelque chose a changé de votre côté, il vous suffit de répondre à ce mail.",
+     "",
+     "Merci,",
+     "{company}"
+    ],
+    "subject_many": "Nouveaux prélèvements le {new_date}, pour un total de {amount}",
+    "body_many": [
+     "Bonjour {customer},",
+     "",
+     "Nous n'avons pas pu encaisser ce qui suit par prélèvement :",
+     "{invoices}",
+     "",
+     "Nous présenterons à nouveau ces prélèvements le {new_date}, pour un total de {amount}. Si quelque chose a changé de votre côté, il vous suffit de répondre à ce mail.",
+     "",
+     "Merci,",
+     "{company}"
+    ]
+   },
+   "new_mandate": {
+    "subject": "Merci de signer un nouveau mandat de prélèvement",
+    "body": [
+     "Bonjour {customer},",
+     "",
+     "Nous n'avons pas pu encaisser ce qui suit par prélèvement avec votre mandat actuel :",
+     "{invoices}",
+     "",
+     "Pour continuer à payer par prélèvement, merci de signer un nouveau mandat ici : [lien vers votre formulaire de mandat]",
+     "",
+     "Une fois le mandat signé, nous présenterons à nouveau le prélèvement de {amount}.",
+     "",
+     "Merci,",
+     "{company}"
+    ],
+    "body_many": [
+     "Bonjour {customer},",
+     "",
+     "Nous n'avons pas pu encaisser ce qui suit par prélèvement avec votre mandat actuel :",
+     "{invoices}",
+     "",
+     "Pour continuer à payer par prélèvement, merci de signer un nouveau mandat ici : [lien vers votre formulaire de mandat]",
+     "",
+     "Une fois le mandat signé, nous présenterons à nouveau ces prélèvements, pour un total de {amount}.",
+     "",
+     "Merci,",
+     "{company}"
+    ]
+   },
+   "b2b_register": {
+    "subject": "Merci de faire enregistrer le mandat B2B {mandate} auprès de votre banque",
+    "body": [
+     "Bonjour {customer},",
+     "",
+     "Votre banque a refusé le prélèvement suivant, parce que le mandat B2B {mandate} n'y est pas enregistré :",
+     "{invoices}",
+     "",
+     "Pourriez-vous demander à votre banque de l'enregistrer ? Nous présenterons ensuite à nouveau le prélèvement de {amount}.",
+     "",
+     "Merci,",
+     "{company}"
+    ],
+    "body_many": [
+     "Bonjour {customer},",
+     "",
+     "Votre banque a refusé les prélèvements suivants, parce que le mandat B2B {mandate} n'y est pas enregistré :",
+     "{invoices}",
+     "",
+     "Pourriez-vous demander à votre banque de l'enregistrer ? Nous présenterons ensuite à nouveau les prélèvements, pour un total de {amount}.",
+     "",
+     "Merci,",
+     "{company}"
+    ]
+   },
+   "conversation": {
+    "subject": "Comment souhaitez-vous payer {amount} ?",
+    "body": [
+     "Bonjour {customer},",
+     "",
+     "Nous avons constaté que le prélèvement suivant a été remboursé ou refusé :",
+     "{invoices}",
+     "",
+     "Comment souhaitez-vous payer {amount} ? Il vous suffit de répondre à ce mail.",
+     "",
+     "Bien cordialement,",
+     "{company}"
+    ],
+    "body_many": [
+     "Bonjour {customer},",
+     "",
+     "Nous avons constaté que les prélèvements suivants ont été remboursés ou refusés :",
+     "{invoices}",
+     "",
+     "Comment souhaitez-vous payer {amount} ? Il vous suffit de répondre à ce mail.",
+     "",
+     "Bien cordialement,",
+     "{company}"
+    ]
+   },
+   "mandate_renewal": {
+    "subject": "Merci de renouveler votre mandat de prélèvement",
+    "body": [
+     "Bonjour {customer},",
+     "",
+     "Votre mandat de prélèvement {mandate} chez nous a expiré le {expiry_date}, 36 mois après le dernier prélèvement effectué avec ce mandat.",
+     "",
+     "Pour continuer à payer par prélèvement, merci de signer un nouveau mandat ici : [lien vers votre formulaire de mandat]",
+     "",
+     "Merci,",
+     "{company}"
+    ]
+   }
+  }
+ }
+}

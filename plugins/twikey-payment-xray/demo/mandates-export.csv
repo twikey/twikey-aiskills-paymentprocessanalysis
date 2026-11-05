@@ -1,0 +1,23 @@
+Mandate reference,Customer number,Debtor name,Debtor address,IBAN,Scheme,Signature date,Signed,Status,Last collection,Confirmed by debtor bank
+FICT-M-0001,K1001,"Bakkerij Voorbeeld","Voorbeeldstraat 1, 9000 Gent",BE10999000100104,CORE,2024-01-15,yes,active,2026-10-05,
+FICT-M-0002,K1002,"Brasserie Fictief","Voorbeeldstraat 2, 9000 Gent",BE96999000100205,CORE,2024-01-15,yes,active,2026-10-26,
+FICT-M-0003,K1003,"Slagerij Proefmans","Voorbeeldstraat 3, 9000 Gent",BE85999000100306,CORE,2024-01-15,yes,active,2026-10-26,
+FICT-M-0004,K1004,"Café Demo","Voorbeeldstraat 4, 9000 Gent",BE74999000100407,CORE,2024-01-15,yes,active,2026-10-05,
+FICT-M-0005,K1005,"Boulangerie Exemple","Voorbeeldstraat 5, 9000 Gent",BE63999000100508,CORE,,yes,active,2026-10-26,
+FICT-M-0006,K1006,"Garage Testmans","Voorbeeldstraat 6, 9000 Gent",BE52999000100609,CORE,2024-01-15,yes,active,2026-10-05,
+FICT-M-0007,K1007,"Bloemen Fictief","Voorbeeldstraat 7, 9000 Gent",BE41999000100710,CORE,2024-01-15,no,active,2026-10-26,
+FICT-M-0008,K1008,"Restaurant Le Fictif","Voorbeeldstraat 8, 9000 Gent",BE30999000100811,CORE,2024-01-15,yes,active,2026-10-26,
+FICT-M-0009,K1009,"Apotheek Voorbeeld","Voorbeeldstraat 9, 9000 Gent",BE19999000100912,CORE,2024-01-15,yes,active,2026-10-05,
+FICT-M-0010,K1010,"Drukkerij Demo","Voorbeeldstraat 10, 9000 Gent",BE08999000101013,CORE,2024-01-15,yes,active,2026-10-05,
+FICT-M-0011,K1011,"Kapsalon Proef","Voorbeeldstraat 11, 9000 Gent",BE94999000101114,CORE,2024-01-15,yes,active,2026-10-26,
+FICT-M-0012,K1012,"Hotel Fictief","Voorbeeldstraat 12, 9000 Gent",BE83999000101215,CORE,2024-01-15,yes,active,2026-10-26,
+FICT-M-0009B,K1009,"Apotheek Voorbeeld","Voorbeeldstraat 9, 9000 Gent",BE19999000100912,CORE,2025-06-01,yes,active,,
+FICT-B-0013,K1013,"Bouwbedrijf Voorbeeld","Voorbeeldstraat 13, 9000 Gent",BE72999000101316,B2B,2024-03-01,yes,active,2026-10-05,yes
+FICT-B-0014,K1014,"Transport Demo","Voorbeeldstraat 14, 9000 Gent",BE61999000101417,B2B,2024-03-01,yes,active,2026-10-05,yes
+FICT-B-0015,K1015,"Logistique Fictive","Voorbeeldstraat 15, 9000 Gent",BE50999000101518,B2B,2026-07-10,yes,active,,no
+FICT-M-0122,K1022,"Wijnhandel Voorbeeld","Voorbeeldstraat 22, 9000 Gent",BE70999000102225,CORE,2019-05-01,yes,active,2022-11-30,
+FICT-M-0127,K1027,"Patisserie Exemple","Voorbeeldstraat 27, 9000 Gent",BE15999000102730,CORE,2020-02-01,yes,active,2023-08-31,
+FICT-M-0133,K1033,"IJssalon Voorbeeld","Voorbeeldstraat 33, 9000 Gent",BE46999000103336,CORE,2020-09-01,yes,active,2023-12-20,
+FICT-M-0141,K1041,"Kermis Fictief","Voorbeeldstraat 41, 9000 Gent",BE55999000104144,CORE,2019-03-01,yes,active,2023-04-20,
+,K1018,"Kantoor Proefmans","Voorbeeldstraat 18, 9000 Gent",BE17999000101821,CORE,2021-05-12,yes,active,,
+FICT-M-0003,K1019,"Fietsen Fictief","Voorbeeldstraat 19, 9000 Gent",BE06999000101922,CORE,2023-02-10,yes,active,,

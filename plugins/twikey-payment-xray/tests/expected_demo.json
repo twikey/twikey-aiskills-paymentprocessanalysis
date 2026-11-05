@@ -1,0 +1,252 @@
+{
+  "_how": "Written by hand from the spec in tests/make_demo.py, never copied from the output of the checks. Customer n of the spec is code C0nn because the invoice history is sorted by customer number and codes follow first appearance. Monthly invoice amount of customer n is EUR 400.50 + 25 x n. Invoices are dated the 5th, November 2025 (k=0) to October 2026 (k=11), except for the seven failure-free direct debit customers C002, C003, C005, C007, C008, C011 and C012 (LATE_RUN), invoiced on the 26th. Terms are 30 days (14 for C016-C020). Collection date = due date, moved to the next working day (weekends, Dec 25-26, Jan 1, Apr 3, Apr 6, May 1): the 4th or 5th for most direct debit customers, the 25th for LATE_RUN (Aug 25, Sep 25, Oct 26). As-of date 2026-10-31, today 2026-11-03 in the tests.",
+  "as_of": "2026-10-31",
+
+  "intake": {
+    "_how": "11 files, numbered in name order: 1-3 camt053 Aug-Oct, 4 camt054, 5 factuurhistoriek, 6 impayes, 7 mandates-export, 8-10 pain002 Aug-Oct, 11 rekening2. Invoices: 39 customers x 8 months + 41 in July + 40 x 3 months = 473. Parties: 41 customers plus the landlord in the bank CSV (C042). Mandate list: 22 rows, 21 references (FICT-M-0003 is used twice). Bank credits: 33 in the CSV (C024 also pays the October invoice of C026, October 28) + 29 in camt.053. Debits skipped: 3 in the CSV + 3 supplier payments in camt.053. No transfers between the two own accounts. Collections: 42 successful presentations in the camt.053 batches (Aug 4: 5, Aug 18: 1 retry, Aug 25: 7, Sep 4: 7, Sep 18: 1 retry, Sep 25: 7, Oct 5: 7, Oct 26: 7). Failures: 9 CSV + 6 pain.002 + 4 camt.054 returns; the 4 camt.053 copies of those returns are duplicates. One structured communication in the bank CSV has wrong check digits (C019, August). Rekening (the company's own account) is read for one check and not stored.",
+    "kinds": {
+      "file 5": "invoices",
+      "file 7": "mandates",
+      "file 6": "failed_collections",
+      "file 11": "bank",
+      "file 1": "camt.053",
+      "file 2": "camt.053",
+      "file 3": "camt.053",
+      "file 4": "camt.054",
+      "file 8": "pain.002",
+      "file 9": "pain.002",
+      "file 10": "pain.002"
+    },
+    "invoices": 473,
+    "parties": 42,
+    "customers": 41,
+    "other_parties": 1,
+    "mandate_rows": 22,
+    "mandate_codes": 21,
+    "bank_credit_lines": 62,
+    "debit_lines_skipped": 6,
+    "own_transfers_skipped": 0,
+    "collections_collected": 42,
+    "failed_collections": 19,
+    "failed_amount_unknown": 0,
+    "duplicates_removed": 4,
+    "invalid_structured_communications": 1,
+    "dropped_columns": {
+      "file 5": ["Adres", "E-mail"],
+      "file 7": ["Debtor address"],
+      "file 6": ["Libellé motif"],
+      "file 11": ["Adres tegenpartij"]
+    },
+    "read_not_stored": {
+      "file 11": ["Rekening", "Vrije mededeling"]
+    }
+  },
+
+  "decode": {
+    "_how": "Failures touch four of the 14 direct debit customers (C004 500.50, C006 550.50, C009 625.50, C010 650.50) plus C015 (B2B mandate not confirmed, 775.50) and C041 (expired mandate, 1425.50). MS03: C006 Nov 5 2025 (before the invoice history), C004 Dec 5, C006 Jan 5, C009 Mar 9, C009 Jun 4, C004 Jul 6, C006 Sep 4, C010 Oct 5 = 8 x, 3 x 550.50 + 2 x 500.50 + 2 x 625.50 + 650.50 = 4554.00. MD01: C015 B2B Aug 4, Sep 4, Oct 5 (3 x 775.50) + C041 Core Aug 4 (1425.50) = 3752.00. MS02: C010 Feb 4, Aug 4 = 1301.00. MD06: C010 Apr 7 (650.50) + C009 Sep 4 (625.50) = 1276.00. AM04: C006 Oct 5 = 550.50. AC04: C004 Aug 4 = 500.50. ED05 (in the EPC list, not in Twikey's): C006 May 5 = 550.50. Total 19, 12484.50. The camt returns take the date of the collection they return (linked by end-to-end reference). Categories: worth a new attempt = MS03 + AM04 = 9, 5104.50. New mandate = AC04 + MD01 on Core = 2, 1926.00. Conversation = MD01 on B2B x 3 + MS02 x 2 + MD06 x 2 = 7, 4903.50. Bank = ED05 = 1, 550.50.",
+    "_how_rates": "The bank statements cover August to October 2026. Retries are left out: the collections of Aug 18 (C004) and Sep 18 (C006), each 14 days after a failure on the same mandate and amount. Day 4: Aug 4 = 5 collected (C001, C006, C009, C013, C014) + 4 rejected before the statement (C004, C010, C015, C041) = 9 presented, 4 failed. Sep 4 = 7 collected (C006 and C009 returned later, counted once) + C015 rejected = 8 presented, 3 failed. Monday Oct 5 counts as day 4 (Oct 4 was a Sunday, Oct 3 a Saturday, and the 4th has runs in August and September): 7 collected (C006 and C010 returned later) + C015 rejected = 8 presented, 3 failed. Day 4 together: 10 of 25 = 40.0%, three months, one moved run. Day 25: the LATE_RUN customers, 7 collected on Aug 25, Sep 25 and Monday Oct 26 (Oct 25 was a Sunday, counted as day 25) = 21 presented, 0 failed = 0.0%, three months, one moved run. Both days have 20 collections or more over two months or more. All days: 10 of 46 = 21.7%.",
+    "total": {"count": 19, "amount": 12484.50, "amount_unknown_count": 0},
+    "by_code": {
+      "MS03": {"count": 8, "amount": 4554.00, "known": true},
+      "MD01": {"count": 4, "amount": 3752.00, "known": true},
+      "MS02": {"count": 2, "amount": 1301.00, "known": true},
+      "MD06": {"count": 2, "amount": 1276.00, "known": true},
+      "AM04": {"count": 1, "amount": 550.50, "known": true},
+      "AC04": {"count": 1, "amount": 500.50, "known": true},
+      "ED05": {"count": 1, "amount": 550.50, "known": false, "meaning": "Settlement of the collection failed"}
+    },
+    "top_code": "MS03",
+    "by_category": {
+      "new_attempt": {"count": 9, "amount": 5104.50},
+      "new_mandate": {"count": 2, "amount": 1926.00},
+      "conversation": {"count": 7, "amount": 4903.50},
+      "bank": {"count": 1, "amount": 550.50}
+    },
+    "failures_by_day": {"4": 9, "5": 7, "6": 1, "7": 1, "9": 1},
+    "days_of_month": {
+      "4": {"failed": 10, "presented": 25, "months": 3, "rate_pct": 40.0, "moved_runs": 1, "qualifies": true},
+      "25": {"failed": 0, "presented": 21, "months": 3, "rate_pct": 0.0, "moved_runs": 1, "qualifies": true}
+    },
+    "days_of_month_overall": {"failed": 10, "presented": 46, "rate_pct": 21.7},
+    "repeat_customers": {"C004": 3, "C006": 5, "C009": 3, "C010": 4, "C015": 3},
+    "direct_debit_customers_with_failures": ["C004", "C006", "C009", "C010"],
+    "unknown_codes": ["ED05"]
+  },
+
+  "mandates": {
+    "_how": "Mandate codes follow the file order: FICT-M-0001..0012 = M001..M012, FICT-M-0009B = M013, FICT-B-0013..0015 = M014..M016, FICT-M-0122/0127/0133/0141 = M017..M020, the row without reference = M021, and the last row reuses FICT-M-0003 = M003. 36 months from the last presented collection: 2022-11-30 -> 2025-11-30, 2023-08-31 -> 2026-08-31, 2023-04-20 -> 2026-04-20 (presented again on 2026-08-04, rejected MD01), 2023-12-20 -> 2026-12-20 (50 days left). Every return in the demo is linked to its collection date, so no mandate has an unknown last collection. C004 was collected from its old IBAN in August (AC04) and from the new one after.",
+    "on": "2026-10-31",
+    "rows": 22,
+    "codes": 21,
+    "core": 19,
+    "b2b": 3,
+    "expired": [
+      {"mandate": "M017", "customer": "C022", "expired_on": "2025-11-30", "counted_from": "2022-11-30",
+       "last_presented": "2022-11-30"},
+      {"mandate": "M018", "customer": "C027", "expired_on": "2026-08-31", "counted_from": "2023-08-31",
+       "last_presented": "2023-08-31"},
+      {"mandate": "M020", "customer": "C041", "expired_on": "2026-04-20", "counted_from": "2023-04-20",
+       "last_presented": "2026-08-04", "presented_after_expiry": 1, "failed_after_expiry": 1}
+    ],
+    "to_renew": 4,
+    "expiring_90_days": [{"mandate": "M019", "customer": "C033", "expires_on": "2026-12-20"}],
+    "unused_since_signing": [
+      {"mandate": "M003", "customer": "C019"},
+      {"mandate": "M021", "customer": "C018"}
+    ],
+    "last_collection_unknown": [],
+    "missing_reference": [{"mandate": "M021", "customer": "C018"}],
+    "missing_signature_date": [{"mandate": "M005", "customer": "C005"}],
+    "signature_missing": [{"mandate": "M007", "customer": "C007"}],
+    "duplicate_reference": [{"mandate": "M003", "customers": ["C003", "C019"]}],
+    "possible_duplicate": [{"customer": "C009", "mandates": ["M009", "M013"]}],
+    "iban_changed": [{"mandate": "M004", "customer": "C004", "accounts": 2}],
+    "b2b_not_confirmed": [{"mandate": "M016", "customer": "C015"}]
+  },
+
+  "match": {
+    "_how": "62 credit lines, EUR 64,529.50. Double: C017 pays its September invoice twice (825.50). Bundled: C023 pays August and September in one transfer of 1,951.00. Partial: C031 pays 600.00 of 1,175.50 with the invoice's structured communication. Paid but open: C028's September invoice (1,100.50) is paid at the bank and open in the books. Unmatched: C024 300.00, C038 500.00 (its text names an open invoice) and C024 1,050.50 on October 28 (the October invoice of C026, named in the text: C024 has no open invoice of that amount, so it stays unmatched). Other receipt: the landlord's 2,500.00 deposit refund (C042, in none of the invoices, no structured communication, no open invoice number). The other 54 lines match an invoice the books already show as paid (55,702.00). No payment predates the invoice it pays. The direct debit failures are not bank credit lines, so the failure changes leave this check as it was.",
+    "credit_lines": {"count": 62, "amount": 64529.50},
+    "matched": {"count": 54, "amount": 55702.00},
+    "paid_but_open": {"count": 1, "amount": 1100.50, "customers": ["C028"]},
+    "partial": {"count": 1, "amount": 600.00, "still_open": 575.50, "customers": ["C031"]},
+    "bundled": {"count": 1, "amount": 1951.00, "invoices": 2, "customers": ["C023"]},
+    "double": {"count": 1, "amount": 825.50, "customers": ["C017"]},
+    "unmatched": {"count": 3, "amount": 1850.50, "known_customer": 3, "unknown_party": 0,
+                  "mentions_open_invoice": 2, "customers": ["C024", "C038"]},
+    "other_receipts": {"count": 1, "amount": 2500.00, "customers": ["C042"]}
+  },
+
+  "terms": {
+    "_how": "Direct debit customers pay on the collection date (0 to 3 days after the due date because of weekends and holidays), or on the retry date after a failure (13 to 15 days late). C016-C025 pay one day early, C026-C031 twelve days late, C032-C036 three extra days late every month, C037-C040 stop paying in May. At risk = an open invoice more than 60 days overdue: C010 (refund of April, 210 days, the August refusal, 88, and the October return, 26), C015 (B2B mandate not confirmed, 88), C041 (expired mandate, 88), C037-C040 (149). Pays after failed collections = at most five days late on average, with failed collections: C004 (days late 14, 1, 0, 2, 3, 0, 0, 15, 14, 0, 0 = 49 / 11 = 4.45 -> 4.5, the August retry on the 18th), C006 (0, 15, 0, 2, 3, 14, 0, 1, 0, 14 = 49 / 10 = 4.9), C009 (0, 1, 0, 13, 3, 0, 14, 1, 0, 0 = 32 / 10 = 3.2). Every other direct debit customer has no failure and is clockwork. Score: C026 = 100 - 12x1.5 - 100x0.3 = 52, C032 = 100 - 13.5x1.5 - 90x0.3 - 26x0.5 = 39.75 -> 40, C001 = 100 - 0.6x1.5 - 36x0.3 + 10 (mandate) = 98.3 -> 98.",
+    "_how_money": "Open invoices: C010 April (650.50, 210 days), C010 August (650.50, 88 days), C010 October (650.50, 26 days), C009 September (625.50, 57 days), C006 October (550.50, 26 days), C015 August to October (3 x 775.50), C041 August (1425.50), C037-C040 May to September, C028 September (1,100.50), C031 rest of September (575.50) and every October invoice (not due). Open receivables 74,335.50 (the sum of the five buckets below), overdue 42,068.00 (all buckets but not due). Aging: not due 32,267.50 (October invoices due November 4: 36,520.00 minus the 4,252.50 of C016-C020, whose 14-day term ended October 19), 1-30 days 14,781.50 (14,131.00 plus the October return of C010), 31-60 days 7,428.50, 61-90 days 8,303.50 (invoices due August 4: C010 650.50, C015 775.50, C041 1,425.50, C037-C040 1,325.50 + 1,350.50 + 1,375.50 + 1,400.50 = 5,452.00), over 90 days 11,554.50.",
+    "_how_dso": "DSO = open receivables 74,335.50 / billed in the 90 days before October 31 (invoices of August 5, September 5 and October 5: 40 customers x 36,520.00 = 109,560.00, partly paid invoices counted at their full amount) x 90 = 61.06 -> 61.1 days. Own terms over the same invoices, weighted by amount: C016-C020 have 14 days (4,252.50 a month), the rest 30 days (32,267.50 a month): (4,252.50 x 14 + 32,267.50 x 30) / 36,520.00 = 28.14 -> 28.1 days. Gap 61.1 - 28.1 = 33.0 days.",
+    "profiles": {
+      "clockwork": ["C001", "C002", "C003", "C005", "C007", "C008", "C011", "C012", "C013", "C014", "C016",
+                    "C017", "C018", "C019", "C020", "C021", "C022", "C023", "C024", "C025"],
+      "after_failures": ["C004", "C006", "C009"],
+      "late_but_pays": ["C026", "C027", "C028", "C029", "C030", "C031"],
+      "drifting": ["C032", "C033", "C034", "C035", "C036"],
+      "at_risk": ["C010", "C015", "C037", "C038", "C039", "C040", "C041"],
+      "too_early": []
+    },
+    "agreed_terms_days": {"14": ["C016", "C017", "C018", "C019", "C020"]},
+    "samples": {
+      "C001": {"avg_days_late": 0.6, "on_time_pct": 64, "score": 98},
+      "C004": {"avg_days_late": 4.5},
+      "C006": {"avg_days_late": 4.9},
+      "C009": {"avg_days_late": 3.2},
+      "C016": {"avg_days_late": -1.0, "on_time_pct": 100, "score": 100},
+      "C026": {"avg_days_late": 12.0, "on_time_pct": 0, "score": 52},
+      "C032": {"avg_days_late": 13.5, "on_time_pct": 10, "score": 40}
+    },
+    "open_receivables": 74335.50,
+    "overdue": 42068.00,
+    "aging": {"not_due": 32267.50, "1-30": 14781.50, "31-60": 7428.50, "61-90": 8303.50, "90+": 11554.50},
+    "dso_90d": 61.1,
+    "terms_days_90d": 28.1,
+    "dso_minus_terms": 33.0
+  },
+
+  "steps": {
+    "_how": "Counted from the other checks. Failed collections over November 2025 to October 2026 (12 months): worth a new attempt = MS03 8 + AM04 1 = 9, new mandate = AC04 (C004) + MD01 on Core (C041) = 2, conversation = MD01 on B2B 3 + MS02 2 + MD06 2 = 7, own setup 0, ask the bank = ED05 1. Mandates to renew = 3 expired + 1 expiring within 90 days = 4. Mandates to correct = missing reference M021, missing date of signing M005, no signature M007, duplicate reference M003, possible duplicate C009, two accounts M004, B2B not confirmed M016 = 7. Payments to book by hand over August to October (3 months) = no match 3 + partial 1 + bundled 1 = 5. Invoices paid twice: C017's September invoice, 1. Paid but open 1. Invoices more than seven days late over 12 invoice months = 168: every invoice of C026-C040 that went more than 7 days past due, the direct debit exceptions paid 13 to 15 days late or still open, and the October return of C010 (open, 26 days). The LATE_RUN customers pay at most four days after the due date (weekends and holidays), never late. Steps each = the checklist lengths in data/manual_steps.json (4, 5, 4, 3, 2, 4, 2, 3, 3, 2, 2). Totals: 205 items, 462 steps. Per month, exact values added and rounded once: 168/12 + 9/12 + 7/12 + 5/3 + 2/12 + 1/3 + 1/12 + 1/3 + 0 = 14 + 0.75 + 0.583 + 1.667 + 0.167 + 0.333 + 0.083 + 0.333 = 17.917 -> 17.9 items, 28 + 3 + 2.333 + 5 + 0.833 + 1 + 0.167 + 0.667 = 41.0 steps. Mandates have no period and stay out of the per-month totals.",
+    "items": {
+      "late_invoice": {"count": 168, "months": 12, "per_month": 14.0, "steps_each": 2, "steps_total": 336},
+      "failed_new_attempt": {"count": 9, "months": 12, "per_month": 0.8, "steps_each": 4, "steps_total": 36},
+      "failed_conversation": {"count": 7, "months": 12, "per_month": 0.6, "steps_each": 4, "steps_total": 28},
+      "mandate_renew": {"count": 4, "months": null, "per_month": null, "steps_each": 4, "steps_total": 16},
+      "unmatched": {"count": 5, "months": 3, "per_month": 1.7, "steps_each": 3, "steps_total": 15},
+      "mandate_fix": {"count": 7, "months": null, "per_month": null, "steps_each": 2, "steps_total": 14},
+      "failed_new_mandate": {"count": 2, "months": 12, "per_month": 0.2, "steps_each": 5, "steps_total": 10},
+      "double_payment": {"count": 1, "months": 3, "per_month": 0.3, "steps_each": 3, "steps_total": 3},
+      "failed_unknown": {"count": 1, "months": 12, "per_month": 0.1, "steps_each": 2, "steps_total": 2},
+      "paid_but_open": {"count": 1, "months": 3, "per_month": 0.3, "steps_each": 2, "steps_total": 2},
+      "failed_own_setup": {"count": 0, "months": 12, "per_month": 0.0, "steps_each": 3, "steps_total": 0}
+    },
+    "examples": {
+      "failed_new_attempt": ["C004", "C006", "C009", "C010"],
+      "failed_conversation": ["C009", "C010", "C015"],
+      "mandate_renew": ["C022", "C027", "C033", "C041"],
+      "unmatched": ["C023", "C024", "C031", "C038"],
+      "double_payment": ["C017"]
+    },
+    "total_items": 205,
+    "total_steps": 462,
+    "per_month_total": 17.9,
+    "per_month_steps_total": 41.0,
+    "per_month_left_out": ["mandate_renew", "mandate_fix"]
+  },
+
+  "month": {
+    "_how": "As of October 31, 2026, window of 90 days: August 2 to October 31, 2026. Failures in the window: Aug 4 C004 AC04 (retried Aug 18, closed), C010 MS02, C015 MD01 B2B, C041 MD01 Core; Sep 4 C006 MS03 (retried Sep 18, closed), C009 MD06, C015 MD01; Oct 5 C006 AM04, C010 MS03, C015 MD01. A regular collection of the same amount a month later (C010 Sep 4, C009 Oct 5) is the next invoice and closes nothing. No failure in the window was presented again and failed again, so every debt has one attempt. No later bank payment from C006, C009, C010, C015 or C041 covers a failure, and none of their invoices was paid at the bank. Each failure's invoice is the invoice of that customer due on the collection date (invoice codes follow the invoice history, sorted by customer and month: C001-C014 have 12 invoices each, C015 four from July, C016-C040 12 each from I0173, C041 one, I0473). Suggested day: see decode._how_rates: day 25 (21 collections over three months, none failed) against day 4 (40.0%) and all collections (21.7%). Today is November 3, so the date is the first 25th on or after November 17: Wednesday November 25, 2026. Mails, one per customer: C006 new attempt (AM04, the mail asks for funds), C009 conversation, C010 conversation (the MS02 refusal of August and the MS03 failure of October, 2 x 650.50: conversation comes first), C015 b2b_register (MD01 on its B2B mandate, three invoices, 3 x 775.50), C041 new mandate. Section 1 still lists C010's October failure, with a note to wait for the answer to the mail. Mandates to renew: the 3 expired and 1 expiring, all customers with an open October invoice, so all still active, sorted by expiry date. C041 already gets the new-mandate mail, so its renewal has no separate draft. C033's mandate only expires on December 20: no mail, a collection before that date keeps it valid. Match suggestions: C031's partial payment of 600.00 carries the structured communication of its September invoice (I0362, 575.50 still open), and C024's 1,050.50 matches only one open invoice anywhere, C026's October invoice (I0304), on the amount, and no other line competes for it. C024's advance of 300.00 and C038's 500.00 have no candidate. Paid twice: C017's September invoice (I0195, 825.50, paid again on September 25). Paid but open: C028's September invoice (I0327).",
+    "counts": {"new_attempts": 2, "mails": 5, "mandates_to_renew": 4, "match_lines": 2, "without_candidate": 2,
+               "paid_but_open": 1, "double_payment": 1},
+    "new_attempts": [
+      {"customer": "C006", "mandate": "M006", "invoice": "I0071", "amount": 550.50, "failure_date": "2026-10-05",
+       "first_failure_date": "2026-10-05", "attempts": 1, "reason_code": "AM04", "new_date": "2026-11-25",
+       "mail_reason": "new_attempt"},
+      {"customer": "C010", "mandate": "M010", "invoice": "I0119", "amount": 650.50, "failure_date": "2026-10-05",
+       "first_failure_date": "2026-10-05", "attempts": 1, "reason_code": "MS03", "new_date": "2026-11-25",
+       "mail_reason": "conversation"}
+    ],
+    "collected_later": 2,
+    "closed": {"collected_later": 2, "invoice_closed": 0, "paid_at_bank": 0, "bank_credit": 0},
+    "suggested_day": {"day": 25, "rate_pct": 0.0, "months": 3, "presented": 21, "failed": 0, "date": "2026-11-25",
+                      "moved_to_working_day": false, "earliest": "2026-11-17", "qualifying_days": 2,
+                      "overall_rate_pct": 21.7},
+    "mails": [
+      {"customer": "C006", "reason": "new_attempt", "template": "new_attempt", "invoices": ["I0071"], "amount": 550.50},
+      {"customer": "C009", "reason": "conversation", "template": "conversation", "invoices": ["I0106"],
+       "amount": 625.50},
+      {"customer": "C010", "reason": "conversation", "template": "conversation", "invoices": ["I0117", "I0119"],
+       "amount": 1301.00},
+      {"customer": "C015", "reason": "b2b_register", "template": "b2b_register",
+       "invoices": ["I0169", "I0170", "I0171"], "amount": 2326.50},
+      {"customer": "C041", "reason": "new_mandate", "template": "new_mandate", "invoices": ["I0473"],
+       "amount": 1425.50}
+    ],
+    "mandates_to_renew": [
+      {"customer": "C022", "mandate": "M017", "status": "expired", "expiry_date": "2025-11-30",
+       "counted_from": "2022-11-30", "still_active": true, "advice": null},
+      {"customer": "C041", "mandate": "M020", "status": "expired", "expiry_date": "2026-04-20",
+       "counted_from": "2023-04-20", "still_active": true, "advice": null},
+      {"customer": "C027", "mandate": "M018", "status": "expired", "expiry_date": "2026-08-31",
+       "counted_from": "2023-08-31", "still_active": true, "advice": null},
+      {"customer": "C033", "mandate": "M019", "status": "expiring", "expiry_date": "2026-12-20",
+       "counted_from": "2023-12-20", "still_active": true, "advice": "collect_before_expiry"}
+    ],
+    "renewal_without_draft": ["C041"],
+    "double_payment": [{"invoice": "I0195", "customer": "C017", "amount": 825.50}],
+    "match_lines": [
+      {"customer": "C031", "amount": 600.00, "category": "partial",
+       "candidates": [{"invoice": "I0362", "strength": "structured_communication"}]},
+      {"customer": "C024", "amount": 1050.50, "category": "unmatched",
+       "candidates": [{"invoice": "I0304", "strength": "amount_only"}]}
+    ],
+    "paid_but_open": [{"invoice": "I0327", "customer": "C028", "amount": 1100.50}],
+    "names": {"C006": "Garage Testmans BV", "C010": "Drukkerij Demo NV", "C015": "Logistique Fictive SA",
+              "C041": "Kermis Fictief VOF", "I0071": "VF-0399", "M006": "FICT-M-0006"}
+  },
+
+  "golive": {
+    "_how": "41 invoiced customers, C001-C014 collected by direct debit. 473 invoices over 12 months. Mandates to renew = 3 expired + 1 expiring. Never used since signing, counted apart = 2 (M003 of C019, M021 of C018). 19 failed collections over 12 months = 1.58 -> 1.6 a month. Open and overdue as in terms.",
+    "customers": 41,
+    "direct_debit_customers": 14,
+    "invoices_per_month": 39.4,
+    "mandates_core": 19,
+    "mandates_b2b": 3,
+    "mandates_to_renew": 4,
+    "mandates_never_used": 2,
+    "b2b_not_confirmed": 1,
+    "failed_per_month": 1.6,
+    "open_receivables": 74335.50,
+    "overdue": 42068.00,
+    "tools": {"Exact Online": "Exact", "odoo": "Odoo", "Yuki": null}
+  },
+
+  "report": {
+    "_how": "A findings.md that names C001 and M004 gets the real name and mandate reference back in the report.",
+    "C001": "Bakkerij Voorbeeld BV",
+    "M004": "FICT-M-0004"
+  }
+}
