@@ -1,8 +1,8 @@
 {
   "name": "twikey-payment-xray",
   "displayName": "Twikey Payment X-ray",
-  "version": "0.2.1",
-  "description": "Shows the manual work in your payment process, counted from your own exports, and prepares this month's work for you: failed collections by bank reason code, mandates past the 36-month rule, payments that match no invoice and payment terms against reality, then collections worth a new attempt, customer mail drafts, mandates to renew and match suggestions. Runs on your own computer, never sends anything and never writes a bank file. Twikey receives nothing.",
+  "version": "0.2.2",
+  "description": "Shows where your direct debits fail, why, and what that costs, counted from your own bank files: failed collections by bank reason code, the failure rate per collection day and the customers whose collections fail again and again. Add your mandate list and invoice export for mandates past the 36-month rule, payments that match no invoice and payment terms against reality. Then it prepares this month's work: collections worth a new attempt, customer mail drafts, mandates to renew and match suggestions. Runs on your own computer, never sends anything and never writes a bank file. Twikey receives nothing.",
   "author": {
     "name": "Twikey",
     "url": "https://www.twikey.com"

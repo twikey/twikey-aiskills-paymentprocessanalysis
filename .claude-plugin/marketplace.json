@@ -1,6 +1,6 @@
 {
   "name": "twikey-xray",
-  "description": "Twikey's free plugin for Claude: Payment X-ray shows the manual work in a direct debit payment process, counted from its own exports, and prepares this month's work.",
+  "description": "Twikey's free plugin for Claude: Payment X-ray shows where your direct debits fail, what that costs and the manual work it causes, counted from your own bank files, and prepares this month's work.",
   "owner": {
     "name": "Twikey",
     "url": "https://www.twikey.com"
@@ -9,7 +9,7 @@
     {
       "name": "twikey-payment-xray",
       "source": "./plugins/twikey-payment-xray",
-      "description": "The manual work in your payment process, counted from your own exports: failed collections by bank reason code, the 36-month mandate rule, unmatched payments and terms against reality. Then this month's work, prepared: new attempts, customer mail drafts, mandates to renew and match suggestions. Drafts only, nothing is sent. Twikey receives nothing.",
+      "description": "Where your direct debits fail and the manual work it causes, counted from your own bank files: failed collections by bank reason code and the failure rate per collection day. Add your mandate list and invoice export for the 36-month mandate rule, unmatched payments and payment terms against reality. Then this month's work, prepared: new attempts, customer mail drafts, mandates to renew and match suggestions. Drafts only, nothing is sent. Twikey receives nothing.",
       "category": "finance"
     }
   ]

@@ -53,9 +53,13 @@ The X-ray works on a company's own exports and never sends, collects or changes 
    - Demo: `python3 -B "${CLAUDE_PLUGIN_ROOT}/scripts/twikey_xray.py" --home twikey-xray-workspace --lang en demo --json`.
      It copies the exports of a fictional Belgian wholesaler to `~/.twikey-xray/demo-raw` and reads them.
    - Own data: ask for a folder **outside** the current working folder, for example `~/Documents/payment-exports`.
-     The user saves the exports there with their own file manager, not through you. Useful exports: open
-     invoices or invoice history with a status, paid date or open amount (CSV), bank statements (camt.053 XML or
-     CSV), return and reject files (camt.054, pain.002 or a failed-collections CSV) and the mandate list (CSV).
+     The user saves the exports there with their own file manager, not through you. Ask for exports as far back
+     as the user can go, at least 12 months: the longer the period, the more the X-ray can show. The bank files
+     are enough to start: return and reject files (camt.054, pain.002 or a failed-collections CSV) and camt.053
+     bank statements give the failed collections, new attempts and mail drafts. A camt.053 also gives the failure
+     rate per collection day. A CSV bank statement is used for the payment matching. The mandate list
+     (CSV) adds the mandate checks. Open invoices or invoice history with a status, paid date or open amount (CSV)
+     add the payment matching and payment terms. Tell the user that the invoice export is optional.
      Then run
      `python3 -B "${CLAUDE_PLUGIN_ROOT}/scripts/twikey_xray.py" --home twikey-xray-workspace --lang en init --raw "<folder>"`
      and `python3 -B "${CLAUDE_PLUGIN_ROOT}/scripts/twikey_xray.py" --home twikey-xray-workspace intake --json`.

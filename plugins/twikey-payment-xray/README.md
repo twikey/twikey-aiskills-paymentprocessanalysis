@@ -5,15 +5,16 @@ macOS and Linux. Windows is not supported yet.
 A free Claude Code plugin, made by Twikey, for companies that collect by direct debit. It reads your own exports
 on your own computer.
 
-> **What it does for you.** It shows where your payment process leaks, in euros, counted from your own exports:
-> collections that failed and why, mandates expired under the 36-month rule, payments that match no invoice,
-> invoices paid twice or paid but still open in your books, and customers who pay later than agreed. It counts the
-> manual steps each finding asks for. Then it prepares this month's work: the collections worth a new attempt with
-> a suggested collection day, one mail draft per customer, the mandates to renew and match suggestions for your
-> books.
+> **What it does for you.** It shows where your direct debits fail, why, and what that costs, counted from your
+> own bank files. Add your mandate list and your invoice export, and it also shows the mandates expired under the
+> 36-month rule, payments that match no invoice, invoices paid twice or paid but still open in your books, and
+> customers who pay later than agreed. It counts the manual steps each finding asks for. Then it prepares this
+> month's work: the collections worth a new attempt with a suggested collection day and one mail draft per
+> customer, plus the mandates to renew and match suggestions for your books when you added those exports.
 >
 > **What it needs.** Claude Code 2.1.139 or later on your own computer (macOS or Linux, not claude.ai, Claude Code
-> on the web or Cowork), Python 3.8 or later, and exports from your accounting software and your bank.
+> on the web or Cowork), Python 3.8 or later, and your bank files. Your mandate list and your invoice export from
+> your accounting software are optional.
 >
 > **What it never does.** It never sends anything: no mails, no collections, no bank files. It does not contact
 > your customers and does not change your exports. Twikey receives nothing. Claude works with codes instead of
@@ -26,7 +27,7 @@ on your own computer.
   offers to install the developer tools, accept, or install Python from python.org, then run `python3 --version`
   again. Most Linux distributions ship `python3`.
 - A new, empty folder to start Claude in, for example `~/payment-xray`.
-- Exports from your accounting software and your bank, see "Exports it reads".
+- Exports from your bank, and from your accounting software if you have them, see "Exports it reads".
 
 ## Install
 
@@ -59,7 +60,7 @@ IBAN in the demo is made up.
 ## Use your own exports
 
 1. Make a folder for the exports outside the folder you start Claude in, for example `~/Documents/payment-exports`.
-2. Save your exports there with your own file manager.
+2. Save your exports there with your own file manager, as far back as you can, at least 12 months.
 3. In Claude Code, started in a new, empty folder, say **"set up the payment x-ray"** and give the export folder.
    Claude shows the data notice first.
 4. Say **"run the x-ray"**. Claude writes the findings with codes, including the manual work, then offers the
@@ -144,13 +145,16 @@ your own bank tool. Claude prepares the work once, from the exports you give it.
 
 ## Exports it reads
 
-| Export | Formats |
-|---|---|
-| Open invoices, invoice history | CSV with a header row in English, Dutch or French, with a status, a paid date or an open amount |
-| Bank statement | camt.053 (ISO 20022 XML), CSV |
-| Returns and refunds | camt.054, or the returns inside camt.053 (only returns of direct debits you collected) |
-| Rejected collections | pain.002 status report on a collection file (pain.008), or a failed-collections CSV |
-| Mandate list | CSV |
+Your bank files are enough to start. Export as far back as you can, at least 12 months: the longer the period,
+the more X-ray can show.
+
+| Export | Formats | What it adds |
+|---|---|---|
+| Rejected collections | pain.002 status report on a collection file (pain.008), or a failed-collections CSV | Failed collections, new attempts, mail drafts |
+| Returns and refunds | camt.054, or the returns inside camt.053 (only returns of direct debits you collected) | Failed collections, new attempts, mail drafts |
+| Bank statement | camt.053 (ISO 20022 XML), CSV | The failure rate per collection day (camt.053), and with your invoices the payment matching |
+| Mandate list | CSV | Mandate health, mandates to renew |
+| Open invoices, invoice history (optional) | CSV with a header row in English, Dutch or French, with a status, a paid date or an open amount | Unmatched payments, terms against reality |
 
 The CSV reader was tested on the layouts of the demo exports. It recognizes columns by their names in English,
 Dutch and French, not by bank. Any other layout, including your bank's own CSV, may need you to say which
@@ -289,4 +293,4 @@ Python standard library only. `tests/expected_demo.json` holds the demo results,
 
 MIT, see `LICENSE`.
 
-Twikey Payment X-ray 0.2.1, made by Twikey.
+Twikey Payment X-ray 0.2.2, made by Twikey.
