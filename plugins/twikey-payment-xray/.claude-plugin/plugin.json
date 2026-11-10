@@ -1,0 +1,23 @@
+{
+  "name": "twikey-payment-xray",
+  "displayName": "Twikey Payment X-ray",
+  "version": "0.3.0",
+  "description": "Reads your camt.053 bank statements and shows which direct debits failed and why: failed collections by bank reason code, the failure rate per collection day and the customers whose collections fail again and again. Counts the incoming payments someone books by hand and the manual work each finding asks for. Then it prepares this month's work: the collections worth a new attempt, with a suggested collection day, and one mail draft per customer. Runs on your own computer, never sends anything and never writes a bank file. Twikey receives nothing.",
+  "author": {
+    "name": "Twikey",
+    "url": "https://www.twikey.com"
+  },
+  "homepage": "https://www.twikey.com",
+  "license": "MIT",
+  "keywords": [
+    "twikey",
+    "sepa",
+    "direct debit",
+    "camt.053",
+    "bank statement",
+    "failed collections",
+    "reason codes",
+    "structured communication",
+    "manual work"
+  ]
+}

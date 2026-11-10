@@ -1,0 +1,152 @@
+{
+ "_about": "The manual steps one item asks for when the work is done by hand, per item type and language. twikey_xray.py steps counts the items in the camt.053 bank statements and prints these checklists. The labels follow the item tables in skills/manual-steps/SKILL.md, label_one is the label for a count of one.",
+ "en": {
+  "items": {
+   "failed_new_attempt": {
+    "label": "failed collections worth a new attempt",
+    "label_one": "failed collection worth a new attempt",
+    "checklist": ["look up what the reason code means", "tell the customer",
+                  "present the collection again in your bank tool", "check whether it came through"]
+   },
+   "failed_new_mandate": {
+    "label": "failed collections that need a new mandate",
+    "label_one": "failed collection that needs a new mandate",
+    "checklist": ["look up the reason code", "tell the customer", "get a new mandate signed", "record it",
+                  "collect again"]
+   },
+   "failed_conversation": {
+    "label": "failed collections that need a conversation",
+    "label_one": "failed collection that needs a conversation",
+    "checklist": ["look up the reason code", "contact the customer", "agree on how they will pay",
+                  "record the outcome"]
+   },
+   "failed_own_setup": {
+    "label": "failed collections caused by your own file or setup",
+    "label_one": "failed collection caused by your own file or setup",
+    "checklist": ["look up the reason code", "fix your collection file or setup", "present the collection again"]
+   },
+   "failed_unknown": {
+    "label": "failed collections to ask your bank about",
+    "label_one": "failed collection to ask your bank about",
+    "checklist": ["ask your bank what happened", "decide what to do next"]
+   },
+   "book_by_hand": {
+    "label": "incoming payments to book by hand (no valid structured communication)",
+    "label_one": "incoming payment to book by hand (no valid structured communication)",
+    "checklist": ["find who paid", "find what the payment is for", "book it by hand"]
+   }
+  },
+  "text": {
+   "title": "Manual work in your bank statements, as of {date}.",
+   "line": "{count} {label}: {count} × ({checklist}) = {steps_total} steps",
+   "per_month": " ({per_month} a month over {months} {months_word})",
+   "month_one": "month",
+   "month_many": "months",
+   "total": "Total: {items} items, {steps} steps.",
+   "per_month_total": "Per month: {items} items, {steps} steps.",
+   "none": "None in your bank statements: {labels}.",
+   "and": "and",
+   "basis": "The counts come from your own camt.053 bank statements, and each checklist holds the usual steps when this work is done by hand."
+  }
+ },
+ "nl": {
+  "items": {
+   "failed_new_attempt": {
+    "label": "mislukte domiciliëringen die heraangeboden kunnen worden",
+    "label_one": "mislukte domiciliëring die heraangeboden kan worden",
+    "checklist": ["opzoeken wat de redencode betekent", "de klant verwittigen",
+                  "de domiciliëring heraanbieden in je banksoftware", "nakijken of ze gelukt is"]
+   },
+   "failed_new_mandate": {
+    "label": "mislukte domiciliëringen die een nieuw mandaat vragen",
+    "label_one": "mislukte domiciliëring die een nieuw mandaat vraagt",
+    "checklist": ["de redencode opzoeken", "de klant verwittigen", "een nieuw mandaat laten tekenen",
+                  "het vastleggen", "de domiciliëring heraanbieden"]
+   },
+   "failed_conversation": {
+    "label": "mislukte domiciliëringen die een gesprek met de klant vragen",
+    "label_one": "mislukte domiciliëring die een gesprek met de klant vraagt",
+    "checklist": ["de redencode opzoeken", "de klant contacteren", "afspreken hoe de klant betaalt",
+                  "de afspraak vastleggen"]
+   },
+   "failed_own_setup": {
+    "label": "mislukte domiciliëringen door je eigen bestand of instellingen",
+    "label_one": "mislukte domiciliëring door je eigen bestand of instellingen",
+    "checklist": ["de redencode opzoeken", "je domiciliëringsbestand of instellingen aanpassen",
+                  "de domiciliëring heraanbieden"]
+   },
+   "failed_unknown": {
+    "label": "mislukte domiciliëringen om na te vragen bij je bank",
+    "label_one": "mislukte domiciliëring om na te vragen bij je bank",
+    "checklist": ["aan je bank vragen wat er gebeurd is", "beslissen wat je verder doet"]
+   },
+   "book_by_hand": {
+    "label": "inkomende betalingen om met de hand te boeken (geen geldige gestructureerde mededeling)",
+    "label_one": "inkomende betaling om met de hand te boeken (geen geldige gestructureerde mededeling)",
+    "checklist": ["uitzoeken wie betaald heeft", "uitzoeken waarvoor de betaling is", "ze met de hand boeken"]
+   }
+  },
+  "text": {
+   "title": "Handwerk in je bankafschriften, stand op {date}.",
+   "line": "{count} {label}: {count} × ({checklist}) = {steps_total} stappen",
+   "per_month": " ({per_month} per maand over {months} {months_word})",
+   "month_one": "maand",
+   "month_many": "maanden",
+   "total": "Totaal: {items} items, {steps} stappen.",
+   "per_month_total": "Per maand: {items} items, {steps} stappen.",
+   "none": "Niet in je bankafschriften: {labels}.",
+   "and": "en",
+   "basis": "De aantallen komen uit je eigen camt.053-bankafschriften, en elke checklist bevat de gebruikelijke stappen als je dit werk met de hand doet."
+  }
+ },
+ "fr": {
+  "items": {
+   "failed_new_attempt": {
+    "label": "prélèvements échoués à présenter à nouveau",
+    "label_one": "prélèvement échoué à présenter à nouveau",
+    "checklist": ["chercher ce que signifie le code motif", "prévenir le client",
+                  "présenter à nouveau le prélèvement dans votre outil bancaire", "vérifier qu'il est passé"]
+   },
+   "failed_new_mandate": {
+    "label": "prélèvements échoués qui demandent un nouveau mandat",
+    "label_one": "prélèvement échoué qui demande un nouveau mandat",
+    "checklist": ["chercher le code motif", "prévenir le client", "faire signer un nouveau mandat",
+                  "l'enregistrer", "prélever à nouveau"]
+   },
+   "failed_conversation": {
+    "label": "prélèvements échoués qui demandent un échange avec le client",
+    "label_one": "prélèvement échoué qui demande un échange avec le client",
+    "checklist": ["chercher le code motif", "contacter le client", "convenir de la façon dont il paiera",
+                  "noter ce qui a été convenu"]
+   },
+   "failed_own_setup": {
+    "label": "prélèvements échoués dus à votre propre fichier ou paramétrage",
+    "label_one": "prélèvement échoué dû à votre propre fichier ou paramétrage",
+    "checklist": ["chercher le code motif", "corriger votre fichier de prélèvement ou votre paramétrage",
+                  "présenter à nouveau le prélèvement"]
+   },
+   "failed_unknown": {
+    "label": "prélèvements échoués à vérifier auprès de votre banque",
+    "label_one": "prélèvement échoué à vérifier auprès de votre banque",
+    "checklist": ["demander à votre banque ce qui s'est passé", "décider de la suite"]
+   },
+   "book_by_hand": {
+    "label": "paiements entrants à comptabiliser à la main (sans communication structurée valable)",
+    "label_one": "paiement entrant à comptabiliser à la main (sans communication structurée valable)",
+    "checklist": ["trouver qui a payé", "trouver ce que le paiement règle", "le comptabiliser à la main"]
+   }
+  },
+  "text": {
+   "title": "Travail manuel dans vos relevés bancaires, situation au {date}.",
+   "line": "{count} {label} : {count} × ({checklist}) = {steps_total} étapes",
+   "per_month": " ({per_month} par mois sur {months} {months_word})",
+   "month_one": "mois",
+   "month_many": "mois",
+   "total": "Total : {items} éléments, {steps} étapes.",
+   "per_month_total": "Par mois : {items} éléments, {steps} étapes.",
+   "none": "Rien dans vos relevés bancaires : {labels}.",
+   "and": "et",
+   "basis": "Les nombres viennent de vos propres relevés bancaires camt.053, et chaque liste reprend les étapes habituelles quand ce travail se fait à la main."
+  }
+ }
+}

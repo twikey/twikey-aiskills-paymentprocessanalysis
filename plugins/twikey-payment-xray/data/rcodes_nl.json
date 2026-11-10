@@ -1,0 +1,177 @@
+[
+    {
+        "CODE": "AC01",
+        "DESC": "Het rekeningnummer is onjuist.",
+        "WHEN": "- Afgewezen:\n\nOngeldig formaat van de IBAN.\nIBAN bestaat niet bij de bank van de debiteur.\n\n- Terugsturen:\n\nIBAN bestaat niet op bankniveau.\nOngeldig formaat van de IBAN.                                                                                                                                                                                                                                                           IBAN bestaat niet bij de bank van de debiteur",
+        "WHY": "De debiteur gaf verkeerde gegevens op.\nDe crediteur gebruikte verkeerde IBAN-gegevens uit zijn klantendatabank.\nDe crediteur had een technisch probleem tijdens de verwerking van de inningsopdracht of bij de omzetting van BBAN naar IBAN.",
+        "RES": "Neem contact op met de debiteur om de juistheid van het IBAN van de debiteur te bevestigen.\nIn geval van wijziging van het mandaat: controleer de door de debiteur verstrekte gegevens.\nControleer de databank die gebruikt wordt voor de omzetting van BBAN naar IBAN."
+    },
+    {
+        "CODE": "AC04",
+        "DESC": "Het opgegeven rekeningnummer is afgesloten",
+        "WHEN": "De rekening van de debiteur is afgesloten bij de debiteurbank.\n\nOpmerking: Deze code kan in bepaalde SEPA-landen niet worden gebruikt om redenen van gegevensbescherming. Als alternatief wordt dan MS03 gebruikt.\n",
+        "WHY": "De crediteur gebruikte een oud rekeningnummer.\nDe schuldenaar heeft zijn rekening gewijzigd of opgeheven sinds de afgifte van het mandaat.",
+        "RES": "Neem contact op met de schuldenaar om de nieuwe rekening te vragen. Sluit een nieuw mandaat af."
+    },
+    {
+        "CODE": "AC06",
+        "DESC": "De opgegeven rekening is geblokkeerd, waardoor er geen transacties kunnen gebeuren",
+        "WHEN": "Geblokkeerde rekening.\nDoor de debiteur voor automatische afschrijving geblokkeerde rekening.",
+        "WHY": "De bank van de schuldenaar blokkeerde de rekening of de Sepa Domiciliëring vanwege een rechterlijk bevel.\nDe schuldenaar heeft  Sepa domiciliëringen voor zijn rekening laten blokkeren.",
+        "RES": "Neem contact op met de schuldenaar voor een andere rekening/betaaloplossing.\n"
+    },
+    {
+        "CODE": "AC13",
+        "DESC": "De debiteurrekening is een consumentenrekening (Alleen voor Sepa B2B domiciliëringen)",
+        "WHEN": "De SEPA B2B domiciliëring werd aangeboden aan een betaalrekening waarbij de debiteur-rekeninghouder een consument is of waarbij het type betaalrekening alleen bestemd is voor consumenten.",
+        "WHY": "De debiteur (consument) wist niet dat het ondertekenen van een B2B-mandaat voorbehouden is aan niet-consumenten.\nHet type betaalrekening staat debitering van SDD B2B incasso niet toe/ondersteunt dit niet.\nDe debiteur gaf informatie over een verkeerde betaalrekening.\nDe bank heeft de debiteur niet uitgelegd dat ze een rekening hebben geactiveerd die B2B niet ondersteunt. Dit komt af en toe voor bij zelfstandigen in bijberoep of ZZP'ers in bijberoep.",
+        "RES": "Neem contact op met de debiteur voor opheldering en om een andere betalingswijze overeen te komen.\nSluit een CORE SEPA domiciliëringsmandaat af met de schuldenaar."
+    },
+    {
+        "CODE": "AG01",
+        "DESC": "Domiciliëring verboden op deze rekening om wettelijke redenen",
+        "WHEN": "Rekening niet toegestaan voor domiciliëring om wettelijke redenen (zoals een spaarrekening in verschillende landen). De AG01 code wordt nooit gebruikt om aan te duiden dat er een B2B domiciliëring wordt gebruikt. Daarvoor wordt de AC13 code gebruikt.",
+        "WHY": "De schuldenaar gaf informatie over een verkeerde rekening. Dit komt vooral voor bij spaarrekeningen of beleggingsrekeningen of nog een ander type rekening.",
+        "RES": "Neem contact op met de schuldenaar om informatie te verkrijgen over de te gebruiken betaalrekening."
+    },
+    {
+        "CODE": "AG02",
+        "DESC": "Operatiecode/ transactiecode/ sequentietype onjuist, ongeldig bestandsformaat",
+        "WHEN": "Terugkerend na eenmalige betaling (RCUR na een OOFF).\nEenmalig na een terugkerende betaling (OOFF na een RCUR).\nDe in het bericht vermelde identificatiecode van de regeling (d.w.z. dienstniveau of lokaal instrument) is onjuist.",
+        "WHY": "Schuldeiser: Technische fout of fout als gevolg van het proces van de transactie of het bestand (sequentietype).",
+        "RES": "Corrigeer de verkeerde informatie. Als de fout te wijten is aan het softwarepakket, verbeter het. Sluit een terugkerend mandaat af met de schuldenaar wanneer u het one-off type hebt gebruikt. Twikey raadt aan om éénmalige transacties zo weinig mogelijk te gebruiken."
+    },
+    {
+        "CODE": "AM04",
+        "DESC": "Onvoldoende saldo op de rekening",
+        "WHEN": "Er zijn niet voldoende middelen op de rekening van de debiteur om het volledige bedrag van de transactie te innen. Nota: Deze code kan in bepaalde SEPA-landen niet worden gebruikt om redenen van gegevensbescherming. MS03 kan als alternatief worden gebruikt. Wordt bijvoorbeeld wel gebruikt in Nederland maar bijna niet in België.",
+        "WHY": "Debiteur: Onvoldoende middelen op zijn rekening.\nCrediteur: Ontbreken van vooraankondiging van de komende SDD (datum en bedrag).",
+        "RES": "Informeer de schuldenaar op voorhand zodat de schuldenaar tijdig geld op zijn rekening stort. Probeer het geld te innen op het moment de klant vermoedelijk wel geld op zijn rekening heeft staan."
+    },
+    {
+        "CODE": "AM05",
+        "DESC": "Dubbele inning",
+        "WHEN": "Dezelfde SDD-inning werd in een nabij verleden ook al verwerkt",
+        "WHY": "Crediteur/ Crediteurbank: Kan een  interne fout zijn in het boekhoudsysteem of bij de bank.",
+        "RES": "Controleer of het effectief om een dubbele inning gaat. Indien dit echt correct is,  neemt u best contact op met de schuldenaar om ervoor te zorgen dat hij op een andere manier betaald."
+    },
+    {
+        "CODE": "BE05",
+        "DESC": "Identificatiecode van de crediteur onjuist",
+        "WHEN": "Het schuldeisersnummer is niet correct of is gewijzigd zonder dat er een wijziging is doorgegeven in het domiciliëringsbestand.",
+        "WHY": "Het boekhoudpakket van de schuldeiser kan door een technische fout het verkeerde nummer maken. Het kan ook zijn dat in de context van B2B mandaten een wijziging (\"amendment\") van schuldeisersnummer niet werd doorgegeven.",
+        "RES": "Verbeter het schuldeisersnummer of sluit een nieuw mandaat af in het geval het wel juist is. Tenslotte checkt u ook beter met uw bank of Sepa Domiciliëringsexpert of alle parameters in uw instructies naar de bank juist staan."
+    },
+    {
+        "CODE": "CNOR",
+        "DESC": "De crediteurbank is niet onder deze BIC geregistreerd als Sepa Domiciliëringsbank",
+        "WHEN": "In de praktijk kom je deze boodschap niet tegen. De bank zal immers direct een fout geven bij de upload van hetdomiciliëringsbestand.",
+        "WHY": "Soms kunnen banken op een indirecte manier deelnemen aan het Sepa Domiciliëringssysteem. In dat geval heeft de directe deelnemer van Sepa Domiciliëringen de \"indirecte\" deelnemer niet aangegeven.",
+        "RES": "Neem contact op met uw bank."
+    },
+    {
+        "CODE": "DNOR",
+        "DESC": "De debiteurbank is géén deelnemer (meer) aan het Sepa domiciliëringssysteem",
+        "WHEN": "De debiteurbank is niet geregistreerd onder deze BIC in het Sepa domiciliëringssysteem.",
+        "WHY": "Debiteurbank/ Crediteur: Bereikbaarheid van de debiteurbank werd niet gecontroleerd bij het aanvaarden of aanmaken van de bestanden.",
+        "RES": "Vraag aan de partij die de foutmelding heeft doorgegeven om opnieuw te checken  of zijn controles correct zijn.\nNeem contact op met de debiteur om een andere wijze van betaling overeen te komen en maak hem attent op het feit dat zijn bank géén domiciliëringen ondersteunt. Gebruik bij het aanmaken van het mandaat een tool (bv. Twikey) die deze verificatie automatisch doet. Zo vermijdt u tijdsverlies, zowel bij u als bij uw klant."
+    },
+    {
+        "CODE": "FF01",
+        "DESC": "Bestandsformaat onvolledig of ongeldig",
+        "WHEN": "Het XML-bestand is niet naar behoren ingevuld of is niet correct.\nEr is een syntaxisfout in het bestand.\nDe crediteurbank of haar intermediaire bank heeft geen XSD-controle uitgevoerd alvorens het bestand  in te dienen.",
+        "WHY": "Crediteur/ Debiteurbank/ tussenliggende partij die de bestanden bij de bank aanlevert heeft geen controles gedaan op de import.\nHet pakket dat de XML aanmaakt, maakt deze fout aan.",
+        "RES": "Herstel het XML-bestand en lever het opnieuw aan bij de bank."
+    },
+    {
+        "CODE": "MD01",
+        "DESC": "Geen mandaat",
+        "WHEN": "- Bij Core mandaten :\n\nHet mandaat is gedurende meer dan 36 maanden niet gebruikt en werd door de bank geschrapt. Of een nieuw geregistreerd mandaat is niet gebruikt in de eerste 12 maanden (in het geval er een preregistratie is gedaan bij de bank (via Twikey)).\nHet mandaat werd door de debiteur geannuleerd.\nDubbel gebruik van het unieke mandaatnummer.\n\n- Bij B2B mandaten :\n\nDe debiteur is nog niet naar de bank gegaan voor registratie.\nDe bank(medewerker) heeft het mandaat verkeerd geregistreerd.",
+        "WHY": "Het mandaat bestaat nog niet.\nHet mandaat bestaat niet meer.",
+        "RES": "Voor CORE mandaten: maak de schuldenaar hierop attent en laat hem een nieuw mandaat tekenen.\nVoor B2B mandaten: Als u nog niet digitaal werkt met B2B mandaten dan moet u helaas uw klant terug naar bank sturen voor de registratie. Check wel even of uw mandaatnummerstructuur \"menselijk\" is. In de praktijk is het bv geen goed idee om moeilijk identificeerbare tekens te gebruiken zoals bijvoorbeeld: HALLO001. Een fout tussen een \"0\" en een \"O\" is snel gemaakt bij het overtikken door de bankmedewerker.\nVoor beide: probeer uw mandaat niet op papier af te sluiten maar digitaal."
+    },
+    {
+        "CODE": "MD02",
+        "DESC": "Gegevens mandaat ontbreken of zijn onjuist",
+        "WHEN": "De mandaatgegevens in de mandaatgerelateerde informatie zijn niet identiek aan die in het mandaat (wijzigingen waren niet meegedeeld).\nDe mandaatgegevens komen niet overeen met de reeds opgeleverde informatie van het mandaat.\nIn geval van wijziging van het mandaat: de oorspronkelijke IBAN en de nieuwe IBAN zijn dezelfde.",
+        "WHY": "De  wijziging van het mandaat is niet gebeurd volgens de EPC-regels.\nDe gewijzigde informatie is niet correct.",
+        "RES": "Twikey wijkt hier af van het advies van EPC: sluit een nieuw mandaat af in de plaats te proberen het te corrigeren. Niet alle banken verwerken de wijzigingen op exact dezelfde manier."
+    },
+    {
+        "CODE": "MD06",
+        "DESC": "Betwiste toegestane transactie (alleen voor domiciliëringen SDD Core)",
+        "WHEN": "Onvoorwaardelijke terugbetaling van een transactie (SDD Core - tot 8 weken na debetdatum).",
+        "WHY": "De klant heeft gebruik gemaakt van zijn onvoorwaardelijk recht op terugbetaling gedurende 8 weken.",
+        "RES": "Neem contact op met de schuldenaar en bespreek waarom deze betaling teruggeroepen werd. Indien het duidelijk is dat er fraude gepleegd werd door de eindklant dan vermijdt u best om nog mandaten in de toekomst af te sluiten met deze eindklant."
+    },
+    {
+        "CODE": "MD07",
+        "DESC": "Debiteur overleden",
+        "WHEN": "Debiteur overleden\n\nOpmerking: Deze code kan in bepaalde SEPA-landen niet worden gebruikt om redenen van gegevensbescherming. In dat geval kan AC06 of MS03 als alternatief worden gebruikt.\n",
+        "WHY": "Persoon is (waarschijnlijk) overleden.",
+        "RES": "Het mandaat wordt automatisch opgeschort. Contacteer voorzichtig de nabestaanden en check of het contract - mandaat bij iemand anders moet terechtkomen. Opgepast: onze jarenlange ervaring met codes wijst uit dat deze informatie van de bank NIET altijd 100% klopt. Enige voorzichtigheid is dus aan de orde in deze gevoelige materie."
+    },
+    {
+        "CODE": "MS02",
+        "DESC": "Weigering door de schuldenaar",
+        "WHEN": "Weigering door de schuldenaar bij de prenotificatie.",
+        "WHY": "De schuldenaar die de prenotificatie ontving, besloot de inning te weigeren.",
+        "RES": "Neem contact op met de schuldenaar."
+    },
+    {
+        "CODE": "MS03",
+        "DESC": "Reden niet opgegeven",
+        "WHEN": "De bank gebruikt dit om een mislukking door te geven wanneer andere codes niet gebruikt kunnen worden. Dit is het geval wanneer de nationale wetgeving (bv. wetgeving inzake gegevensbescherming) het gebruik van AC04, AM04, MD07, RR01, RR02, RR03 en RR04 niet toestaat. In de praktijk zal voor Belgische schuldenaars MS03 vooral géén geld op de rekening betekenen. Het gaat hier zelden om een andere reden. Voor Nederland gebruiken de meeste banken AM04, wat de juiste mededeling is om te melden dat er géén saldo voorhanden is",
+        "WHY": "",
+        "RES": "Biedt zeker minimaal 1 keer opnieuw aan, dit kan altijd voorkomen. En bouw voor de volgende inningen meer geavanceerde stappen met automatische follow-up in."
+    },
+    {
+        "CODE": "RC01",
+        "DESC": "Bankidentificatiecode (BIC) onjuist",
+        "WHEN": "De BIC van de bank is niet correct.",
+        "WHY": "De BIC van de debiteurbank bestaat niet in de BIC-database.\nDe BIC is niet volledig (BIC8 in plaats van BIC11) voor niet SEPA EEA landen.",
+        "RES": "Neem contact op met de debiteur voor de juiste BIC."
+    },
+    {
+        "CODE": "RR01",
+        "DESC": "Regelgevende reden",
+        "WHEN": "Ontbrekende debiteurrekening of identificatie.\nRegelgevende reden.\nOpmerking: Deze code kan in bepaalde SEPA-landen niet worden gebruikt om redenen van gegevensbescherming. MS03 kan als alternatief worden gebruikt.",
+        "WHY": "De IBAN van de debiteur is een verplicht gegeven voor de SDD-domiciliëring aan de zijde van de crediteurbank.",
+        "RES": "Herstel de SDD-incasso  om de informatie over de debiteurrekening  te vervolledigen.\nContacteer  de crediteurbank."
+    },
+    {
+        "CODE": "RR02",
+        "DESC": "Specificatie van de naam en/of adres van de debiteur die nodig is voor regelgevingsdoeleinden is onvoldoende of ontbreekt.",
+        "WHEN": "Ontbrekende debiteurnaam.\nOntbrekende adres in het geval van niet-Europese domiciliëringen.\nOpmerking: Deze code kan in bepaalde SEPA-landen niet worden gebruikt om redenen van gegevensbescherming. Als alternatief kan MS03 worden gebruikt.\n",
+        "WHY": "Crediteur : De naam van de debiteur is een verplicht gegeven voor de SDD-domiciliëring aan de zijde van de crediteurbank.",
+        "RES": "Herstel de SDD-incasso om de debiteurnaam te vervolledigen.\nContacteer de crediteurbank."
+    },
+    {
+        "CODE": "RR03",
+        "DESC": "Specificatie van de naam en/of adres van de crediteur die nodig is voor regelgevingsdoeleinden is onvoldoende of ontbreekt.",
+        "WHEN": "Ontbrekende crediteurnaam (adres is een facultatief veld).\nOpmerking : Deze code kan in bepaalde SEPA-landen niet worden gebruikt om redenen van gegevensbescherming. Als alternatief kan MS03 worden gebruikt.",
+        "WHY": "Crediteur : De naam van de crediteur is een verplicht gegeven voor het doorsturen van inningen.",
+        "RES": "Corrigeer de batch en biedt deze opnieuw aan.\nNeem contact op met de bank bij aanhoudende problemen."
+    },
+    {
+        "CODE": "RR04",
+        "DESC": "Regelgevende reden",
+        "WHEN": "Wordt gebruikt voor andere regelgevingsredenen dan RR01, RR02 of RR03.\n\nOpmerking: Deze code kan in bepaalde SEPA-landen om redenen van gegevensbescherming niet worden gebruikt. MS03 kan als alternatief worden gebruikt.",
+        "WHY": "",
+        "RES": "Neem contact op met de crediteurbank."
+    },
+    {
+        "CODE": "SL01",
+        "DESC": "Specifieke dienst aangeboden door de debiteurbank",
+        "WHEN": "De schuldenaar maakt gebruik van de limieten die zijn bank toelaat te configureren:\n\nBlokkering van de schuldeiser.\nBeperking van bedragen, bv bij B2B domiciliëringen.\nAantal inningen.\nAndere diensten aangeboden door de debiteurbank.\n",
+        "WHY": "De schuldenaar heeft limieten geconfigureerd tijdens of na het afsluiten van het mandaat.",
+        "RES": "Neem contact op met de schuldenaar."
+    },
+    {
+        "CODE": "PY01",
+        "DESC": "Niet routeerbaar. ",
+        "WHEN": "Dit kan gebeuren wanneer de bank van de schuldenaar geen SDD's verwerkt.",
+        "WHY": "",
+        "RES": "Neem contact op met Twikey."
+    }
+]

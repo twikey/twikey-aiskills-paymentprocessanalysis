@@ -1,0 +1,177 @@
+[
+    {
+        "CODE": "AC01",
+        "DESC": "Le numéro de compte est incorrect ",
+        "WHEN": "- Rejet:\n\nFormat IBAN invalide \n\nIBAN n'existe pas auprès de la banque du débiteur\n- Renvoi:\n\nIBAN n'existe pas au niveau bancaire\n\nFormat IBAN invalide\n                                                                                                                                                                                                                                                                IBAN n'existe pas auprès de la banque du débiteur\n\n\nIBAN n'existe pas au niveau bancaire ",
+        "WHY": "Le débiteur a fourni des informations incorrectes.\nLe créancier a utilisé des données IBAN incorrectes de sa base de données clients\nLe créancier a rencontré un problème technique lors du traitement de l'ordre d'encaissement ou lors de la conversion de BBAN en IBAN",
+        "RES": "Contactez le débiteur pour vérifier l'exactitude de l'IBAN du débiteur.\nEn cas de mofifcation du  mandat :   vérifiez les données fournies par le débiteur.\nVérifiez la base de données utilisée pour la conversion de BBAN en IBAN."
+    },
+    {
+        "CODE": "AC04",
+        "DESC": "Le numéro de compte spécifié est fermé",
+        "WHEN": "Le numéro de compte du débiteur est fermé chez la banque du débiteur.\n\nRemarque: pour des raison de protection des données, ce code ne peut pas utilisé dans certains pays SEPA. Dans ce cas, il est remplacé par le code MS03.",
+        "WHY": "Le créancier a utilisé un ancien numéro de compte.\nLe débiteur a modifié ou fermé son compte depuis l'émission du mandat.",
+        "RES": "Contactez le débiteur pour demander le nouveau numéro de compte. Concluez un nouveau mandat."
+    },
+    {
+        "CODE": "AC06",
+        "DESC": "Le numéro de compte spécifié est bloqué, raison pour laquelle aucune transaction ne peut être effectuée",
+        "WHEN": "Compte bloqué.\nCompte bloqué par le débiteur pour tout prélèvement automatique.",
+        "WHY": "La banque du débiteur a bloqué le compte ou le prélèvement Sepa en raison d'une injonction.\nLe débiteur a bloqué les prélèvements Sepa pour son compte.",
+        "RES": "Contactez le débiteur pour un autre compte ou une autre solution de paiement."
+    },
+    {
+        "CODE": "AC13",
+        "DESC": "Le compte débiteur est un compte consommateur (pour les prélèvements B2B uniquement)",
+        "WHEN": "Le prélèvement SEPA B2B fut présenté pour un compte consommateur ou pour un type de compte qui est uniquement destiné au consommateurs.",
+        "WHY": "Le débiteur (consommateur) ne savait pas que la signature d'un mandat B2B est réservée aux non-consommateurs.\nLe type de compte de paiement ne permet pas/ne prend pas en charge les prélèvements SDD B2B.\nLe débiteur a fourni des informations sur un compte de paiement incorrect.\nLa banque n'a pas expliqué au débiteur qu'elle avait activé un compte qui ne prend pas en charge les prélèvements B2B. Cela se produit parfois avec des  travailleurs indépendants à titre complémentaire ou des  indépendants sans personnel à titre complémentaire.",
+        "RES": "Contactez le débiteur pour obtenir des explications et convenir un autre mode de paiement.\nConcluez un mandat de prélèvement CORE SEPA avec le débiteur."
+    },
+    {
+        "CODE": "AG01",
+        "DESC": "Prélèvement interdit sur ce compte pour raisons réglementaires",
+        "WHEN": "Le compte ne peut pas être utilisé pour des prélèvements pour des raisons réglementaires (tel qu'un compte épargne dans certains pays). Le code AG01 n'est jamais utilisé pour un prélèvement B2B. Dans ce cas le code AC13 sera utilisé.",
+        "WHY": "Le débiteur a donné des informations sur un compte incorrect, tel qu'un compte d'épargne, un compte de placement ou un autre type de compte.",
+        "RES": "Contactez le débiteur pour obtenir des informations sur le compte de paiement à utiliser."
+    },
+    {
+        "CODE": "AG02",
+        "DESC": "Code opération/code transaction/ type de séquence incorrect, format de fichier invalide",
+        "WHEN": "Récurrent après un paiement unique (RCUR après un OOFF).\nUnique après un paiement récurrent (OOFF après un RCUR).\nLe code d'identification du type (au niveau de service ou instrument local) repris dans le message est incorrect.\n",
+        "WHY": "Créancier : Erreur technique ou erreur due au processus de  transaction ou du fichier (type de séquence).",
+        "RES": "Corrigez les informations incorrectes. Si ces erreurs sont dues au progiciel, adaptez-le. Concluez  un mandat récurrent avec le débiteur si vous avez utilisé le type unique. Twikey recommande d'utiliser le moins possible de transactions ponctuelles."
+    },
+    {
+        "CODE": "AM04",
+        "DESC": "Fonds insuffisants sur le compte",
+        "WHEN": "Il n'y a pas assez de fonds sur le compte du débiteur pour percevoir le montant total de la transaction. Remarque : Ce code ne peut pas être utilisé dans certains pays SEPA pour des raisons de protection des données. MS03 peut être utilisé comme alternative. Ce code est par exemple régulièrement  utilisé aux Pays-Bas mais rarement en Belgique.",
+        "WHY": "Débiteur : Fonds insuffisants sur son compte.\nCréancier : Absence de prénotification du SDD à venir (date et montant).",
+        "RES": "Informez le débiteur  à l'avance afin qu'il approvisionne son compte. Essayez de recouvrer  l'argent lorsque  son compte est suffisamment approvisionné."
+    },
+    {
+        "CODE": "AM05",
+        "DESC": "Prélèvement en double",
+        "WHEN": "Le même prélèvement SDD a déjà été effectué récemment.",
+        "WHY": "Créancier/banque créancière : il peut s'agir d'une erreur dans le système comptable ou auprès de la banque.",
+        "RES": "Vérifiez qu'il s'agisse bien d'un double prélèvement. Si le prélèvement est vraiment correct, il est indiqué de contacter le débiteur pour s'assurer qu'il paie d'une autre manière."
+    },
+    {
+        "CODE": "BE05",
+        "DESC": "Code identification du créditeur est incorrect",
+        "WHEN": "Le numéro de créancier est incorrect ou a été modifié sans qu'un changement ait été communiqué dans le fichier de prélèvement.",
+        "WHY": "Le progiciel  comptable du créancier peut avoir créé un mauvais numéro suite à une erreur technique. Il est également possible que dans le cadre des mandats B2B un changement (\"modification\") de numéro de créancier n'ait pas été communiqué.",
+        "RES": "Corrigez le numéro de créancier ou concluez un nouveau mandat s'il est correct. Enfin, il est préférable de vérifier auprès de votre banque ou de votre expert en domiciliations Sepa que  les paramètres de vos instructions à la banque sont correctement paramétrées."
+    },
+    {
+        "CODE": "CNOR",
+        "DESC": "La banque du créditeur n'est pas enregistrée comme banque de domiciliation SEPA sous ce BIC",
+        "WHEN": "En pratique, vous ne rencontrerez pas ce message. La banque donnera immédiatement une erreur lors du téléchargement d'un fichier de prélèvements automatiques.",
+        "WHY": "Dans certains cas, les banques peuvent participer indirectement au système de prélèvement Sepa. Dans ce cas, le participant direct des domiciliations Sepa n'a pas indiqué le participant \"indirect\".",
+        "RES": "Contactez votre banque."
+    },
+    {
+        "CODE": "DNOR",
+        "DESC": "Le BIC de la banque du débiteur n'est pas (plus) enregistré dans  le système de domiciliation SEPA",
+        "WHEN": "La banque débitrice n'est pas enregistrée sous ce BIC dans le  système de prélèvement Sepa.",
+        "WHY": "Banque débitrice / Créancier : L'accessibilité de la banque débitrice n'a pas été vérifiée lors de l'acceptation ou de la création des fichiers.",
+        "RES": "Demandez à la partie qui a envoyé le message d'erreur de revérifier si ses vérifications sont correctes.\nContactez le débiteur pour convenir d'un autre mode de paiement et lui faire savoir que sa banque ne prend pas en charge les prélèvements. Utilisez, lors de la création du mandat,  un outil (ex. Twikey) qui effectue cette vérification automatiquement. De cette façon, vous évitez de perdre du temps pour vous et votre client."
+    },
+    {
+        "CODE": "FF01",
+        "DESC": "Format de fichier incomplet ou invalide",
+        "WHEN": "Le fichier XML n'a pas été complété correctement ou est incorrect.\nIl y a une erreur de syntaxe dans le fichier.\nLa banque créancière ou sa banque intermédiaire n'a pas effectué de contrôle XSD avant de remettre le fichier pour exécution.",
+        "WHY": "Le créancier/la banque débitrice/l'intermédiaire qui remet les fichiers à la banque n'a effectué aucun contrôle lors de l'importation.\nLe progiciel qui crée le XML crée cette erreur.",
+        "RES": "Corrigez le fichier XML et renvoyez-le à la banque."
+    },
+    {
+        "CODE": "MD01",
+        "DESC": "Pas de mandat",
+        "WHEN": "- Dans le cas de mandats Core  :\n\nLe mandat n'a pas été utilisé depuis plus de 36 mois et la banque l'a annulé. Ou un nouveau mandat enregistré n'a pas été utilisé au cours des 12 premiers mois (dans le cas où un pré-enregistrement a été effectué auprès de la banque (via Twikey)).\nLe mandat a été annulé par le débiteur.\nDouble utilisation du numéro de mandat unique.\n\n- Dans le cas de mandats B2B  :\n\nLe débiteur n'est pas encore allé à la banque pour enregistrer le mandat\nLa banque (ou son employé) a enregistré le mandat de manière incorrecte.",
+        "WHY": "Le mandat n'existe pas encore.\nLe mandat n'existe plus.",
+        "RES": "Pour les mandats CORE : informez le débiteur de ceci et faites lui  signer un nouveau mandat.\nPour les mandats B2B : Si vous n'utilisez pas encore des mandats B2B numériques, vous devez malheureusement renvoyer votre client à la banque pour enregistrer le mandat. Assurez-vous que la structure de votre numéro de mandat est \"humaine\". En pratique ce n'est pas une bonne idée d'utiliser des caractères difficilement identifiables, comme parexemple : HALLO001. Une erreur entre un \"\"0\"\" et un \"\"O\"\" est facilement commise lors de la saisie par l'employé de banque.\nPour les deux types de mandat : n'essayez pas de conclure des mandat sur papier mais concluez-les numériquement.\""
+    },
+    {
+        "CODE": "MD02",
+        "DESC": "Information manquante ou invalide sur le mandat",
+        "WHEN": "Les données du mandat dans les informations relatives au mandat ne sont pas identiques à celles reprises sur le  mandat (les modifications n'ont pas été communiquées).\nLes données du mandat ne correspondent pas aux données  mandat déjà fournies.\nEn cas de changement de mandat :   l'IBAN d'origine et le nouvel IBAN sont les mêmes.",
+        "WHY": "La modification du mandat n'a pas été effectueé conformément les règles de l'EPC.\nLes informations modifiées ne sont pas correctes.",
+        "RES": "Dans ce cas, Twikey ne suit pas  le conseil de l'EPC : signez un nouveau mandat plutôt que d'essayer de le corriger. Toutes les banques ne traitent pas les changements exactement de la même manière."
+    },
+    {
+        "CODE": "MD06",
+        "DESC": "Transaction contestée par le débiteur (pour les prélèvements Core uniquement)",
+        "WHEN": "Remboursement inconditionnel d'une transaction (SDD Core - jusqu'à 8 semaines après la date de débit)",
+        "WHY": "Le client a exercé son droit inconditionnel au remboursement pendant 8 semaines.",
+        "RES": "Contactez le débiteur et demandez-lui pourquoi ce paiement a été rappelé. S'il est clair qu'une fraude a été commise par le client final, il est préférable de ne plus conclure de mandats avec lui dans le futur."
+    },
+    {
+        "CODE": "MD07",
+        "DESC": "Débiteur décédé",
+        "WHEN": "Le débiteur est décédé.\n\nRemarque : Ce code ne peut pas être utilisé dans certains pays SEPA pour des raisons de protection des données. Dans ce cas, AC06 ou MS03 peuvent être utilisés comme alternative.",
+        "WHY": "Le débiteur est (probablement) décédé.",
+        "RES": "Dans ce cas le mandat est automatiquement suspendu. Contactez délicatement  un proche parent du défunt pour vérifier si le contrat - mandat doit être transféré à quelqu'un d'autre. Attention : nos nombreuses années d'expérience avec les codes prouvent que ces informations bancaires ne sont PAS toujours correctes à 100%. Une certaine prudence s'impose donc dans cette situation délicate."
+    },
+    {
+        "CODE": "MS02",
+        "DESC": "Refus du débiteur",
+        "WHEN": "Refus du débiteur lors de la pré-notification.",
+        "WHY": "Le débiteur qui a reçu la pré-notification a décidé de refuser le recouvrement.",
+        "RES": "Contactez le débiteur."
+    },
+    {
+        "CODE": "MS03",
+        "DESC": "Raison non spécifiée",
+        "WHEN": "La banque utilise ce code pour communiquer un échec lorsque d'autres codes ne peuvent pas être utilisés. Ceci est le cas lorsque la législation nationale (par exemple, la loi sur la protection des données) n'autorise pas l'utilisation des codes AC04, AM04, MD07, RR01, RR02, RR03 et RR04. En pratique, pour les débiteurs  belges, le code MS03 sera généralement utilisé pour indiquer qu'il n'y a pas d'argent sur le compt. Il est rarement utilisé pour une autre raison. Pour les Pays-Bas, la plupart des banques utilisent le code AM04, ce qui est le code correct pour signaler qu'il n'y a pas de solde disponible.",
+        "WHY": "",
+        "RES": "Resoumettez le au moins une fois de plus car cela peut toujours arriver. Et configurez des étapes plus avancées avec un suivi automatique pour les prélèvements suivants."
+    },
+    {
+        "CODE": "RC01",
+        "DESC": "BIC incorrect",
+        "WHEN": "Le BIC de la banque est incorrect.",
+        "WHY": "Le BIC de la banque débitrice n'existe pas dans la base de données BIC.\nLe BIC n'est pas complet (BIC8 au lieu de BIC11) pour les pays non-SEPA EEE.",
+        "RES": "Contactez le débiteur pour qu'il vous donne le BIC correct."
+    },
+    {
+        "CODE": "RR01",
+        "DESC": "Raison réglementaire",
+        "WHEN": "Compte débiteur ou identification manquants.\nRaison réglementaire.\nRemarque : Ce code ne peut pas être utilisé dans certains pays SEPA pour des raisons de protection des données. MS03 peut être utilisé comme alternative.\"",
+        "WHY": "L'IBAN du débiteur est une donnée obligatoire pour le prélèvement SDD du côté de la banque créancière.",
+        "RES": "Restaurez le fichier SDD pour compléter les informations du compte débiteur.\nContactez la banque créancière."
+    },
+    {
+        "CODE": "RR02",
+        "DESC": "Nom et/ou adresse obligatoire du débiteur  manque ou est incomplet",
+        "WHEN": "Nom du débiteur manquant.\nAdresse manquante en cas de prélèvements non-européens\nRemarque : Ce code ne peut pas être utilisé dans certains pays SEPA pour des raisons de protection des données. Alternativement, MS03 peut être utilisé.",
+        "WHY": "Créancier : Le nom du débiteur est une donnée obligatoire pour l'encaissement SDD du côté de la banque créancière.",
+        "RES": "Restaurez le fichier SDD pour compléter le nom du débiteur\nContactez la banque créancière."
+    },
+    {
+        "CODE": "RR03",
+        "DESC": "Nom et/ou adresse obligatoire du créditeur  manque ou est incomplet",
+        "WHEN": "Nom du créancier manquant (l'adresse est un champ facultatif)\nRemarque : Ce code ne peut pas être utilisé dans certains pays SEPA pour des raisons de protection des données. Alternativement, MS03 peut être utilisé.",
+        "WHY": "Créancier : Le nom du créancier est une donnée obligatoire pour la transmission des encaissements.",
+        "RES": "Corrigez le batch et soumettez-le à nouveau.\nContactez la banque si le  problème persiste."
+    },
+    {
+        "CODE": "RR04",
+        "DESC": "Raison réglementaire",
+        "WHEN": "Utilisé pour des raisons réglementaires autres que RR01, RR02 ou RR03.\n\nRemarque : Ce code ne peut pas être utilisé dans certains pays SEPA pour des raisons de protection des données. MS03 peut être utilisé comme alternative.",
+        "WHY": "",
+        "RES": "Contactez la banque créancière."
+    },
+    {
+        "CODE": "SL01",
+        "DESC": "Service spécifique offert par la banque du débiteur",
+        "WHEN": "Le débiteur utilise les limites que sa banque lui permet de paramétrer :\n\nBlocage du créancier.\nLimitation des montants, par exemple pour les prélèvements B2B.\nNombre de recouvrements.\nAutres services offerts par la banque débitrice.",
+        "WHY": "Le débiteur a configuré des limites lors de la conclusion du mandat ou après.",
+        "RES": "Contactez le débiteur."
+    },
+    {
+        "CODE": "PY01",
+        "DESC": "Non routable",
+        "WHEN": "Ceci peut se produire lorsque la banque du débiteur ne traite pas les SDD.",
+        "WHY": "",
+        "RES": "Prend contact avec Twikey."
+    }
+]

@@ -1,0 +1,9 @@
+# Workspaces and anything that could hold real data never go into git.
+twikey-xray-workspace/
+twikey-xray-key.json
+twikey-xray-report-*.md
+twikey-xray-month-*.md
+__pycache__/
+*.pyc
+.DS_Store
+.idea/

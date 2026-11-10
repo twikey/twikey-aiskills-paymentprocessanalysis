@@ -1,0 +1,18 @@
+{
+  "description": "Twikey Payment X-ray guard: keeps Claude's tools away from the registered raw export folder. A guard against accidental reads, not a lock.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "args": ["-B", "${CLAUDE_PLUGIN_ROOT}/scripts/xray/guard.py"],
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "twikey-xray",
+  "description": "Twikey's free plugin for Claude: Payment X-ray reads your camt.053 bank statements, shows where your direct debits fail and the manual work it causes, and prepares this month's work.",
+  "owner": {
+    "name": "Twikey",
+    "url": "https://www.twikey.com"
+  },
+  "plugins": [
+    {
+      "name": "twikey-payment-xray",
+      "source": "./plugins/twikey-payment-xray",
+      "description": "Reads your camt.053 bank statements: failed collections by bank reason code, the failure rate per collection day, the incoming payments booked by hand and the manual work they cause. Then this month's work, prepared: new attempts with a suggested day and customer mail drafts. Drafts only, nothing is sent. Twikey receives nothing.",
+      "category": "finance"
+    }
+  ]
+}

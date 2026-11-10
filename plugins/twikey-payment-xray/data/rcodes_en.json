@@ -1,0 +1,177 @@
+[
+    {
+        "CODE": "AC01",
+        "DESC": "Incorrect account number",
+        "WHEN": "- Rejected:\n\nInvalid IBAN format\nIBAN does not exist at the debtor bank\n\n- Send back:\n\nIBAN does not exist at bank level\nInvalid IBAN format\nIBAN does not exist at debtor bank",
+        "WHY": "The debtor provided incorrect information.\nThe creditor used wrong IBAN data from his customer database.\nThe creditor had a technical problem during the processing of the collection order or during the conversion from BBAN to IBAN.",
+        "RES": "Contact the debtor to confirm the correctness of the debtor's IBAN.\nIn case of a modified mandate: check the data provided by the debtor.\nVerify the database used for the BBAN to IBAN conversion."
+    },
+    {
+        "CODE": "AC04",
+        "DESC": "The account specified is closed",
+        "WHEN": "The debtor account is closed at the debtor bank.\nNote: This code cannot be used in some SEPA countries for data protection reasons. In this case, MS03 is used.",
+        "WHY": "The creditor used an old account number.\nThe debtor has changed or closed his account since the mandate was issued.",
+        "RES": "Contact the debtor to ask him the new account number. Conclude a new mandate."
+    },
+    {
+        "CODE": "AC06",
+        "DESC": "The account specified has been blocked for direct debits",
+        "WHEN": "The debtor has blocked this account for direct debits.",
+        "WHY": "The debtor bank blocked the account or the Sepa Direct Debit because of a court order.\nThe debtor has blocked Sepa Direct Debits for this account.",
+        "RES": "Contact the debtor for another account/payment solution."
+    },
+    {
+        "CODE": "AC13",
+        "DESC": "Debtor account is a consumer account (For SDD B2B collections only)",
+        "WHEN": "The SEPA B2B direct debit was offered for a payment account of which the debtor-account holder is a consumer or of which the type is only destined for consumers.",
+        "WHY": "The debtor (consumer) did not know that signing a B2B mandate is reserved for non-consumers.\nThe payment account type does not allow / does not support SDD B2B direct debits.\nThe debtor provided information about an incorrect payment account.\nThe bank did not explain to the debtor that they have activated an account that does not support B2B. This occasionally occurs with self-employed persons in a secondary occupation or with self-employed persons without personnel in a secondary occupation.",
+        "RES": "Contact the debtor for clarification and to agree on a different payment method.\nClose a CORE SEPA direct debit mandate with the debtor."
+    },
+    {
+        "CODE": "AG01",
+        "DESC": "Direct Debit forbidden on this account for regulatory reasons",
+        "WHEN": "Account cannot be used for direct debits due to regulatory reasons (such as a savings account in several countries). The code AG01 is never used for a B2B collection. In this case, the code AC13 is used.",
+        "WHY": "The debtor gave information about a wrong account. This is especially common with savings accounts or investment accounts or yet another type of account.",
+        "RES": "Contact the debtor to obtain information about the payment account to be used."
+    },
+    {
+        "CODE": "AG02",
+        "DESC": "Operation code/transaction code/sequence type incorrect, invalid file format",
+        "WHEN": "Recurrent after a one-off payment (RCUR after an OOFF).\nA one-off after a recurrent payment (OOFF after a RCUR).\nIncorrect identification code for the operation (at service level or local instrument).",
+        "WHY": "Creditor: Technical error or error due to the transaction process or file (sequence type).",
+        "RES": "Correct the incorrect information. If the error is due to the software package, fix it. Close a recurring mandate with the debtor if you have used the one-off type. Twikey recommends using one-time transactions as little as possible."
+    },
+    {
+        "CODE": "AM04",
+        "DESC": "Insufficient funds on the account",
+        "WHEN": "There are not enough funds in the debtor's account to collect the full amount of the transaction. Note: This code cannot be used in certain SEPA countries for data protection reasons. MS03 can be used as an alternative. For example, this code is regularly used in the Netherlands but almost never in Belgium",
+        "WHY": "Debtor: Insufficient funds in his account.\nCreditor: No prenotification of the upcoming SDD (date and amount).",
+        "RES": "Inform the debtor in advance so that the debtor deposits money into his account on time. Try to collect the money when the customer has money in his account."
+    },
+    {
+        "CODE": "AM05",
+        "DESC": "Duplicate collection",
+        "WHEN": "The same SDD collection was already processed recently.",
+        "WHY": "Creditor/ Creditor Bank: Could be an error in the accounting system or at the bank.",
+        "RES": "Check whether it is actually a double collection. If this is really correct, it is best to contact the debtor to ensure that he pays in another way."
+    },
+    {
+        "CODE": "BE05",
+        "DESC": "Incorrect creditor identifier",
+        "WHEN": "The creditor number is incorrect or has been changed without a change being communicated in the collection file.",
+        "WHY": "The creditor accounting package may have created the wrong number due to a technical error. It is also possible that in the context of a B2B mandate, a change (\"amendment\") of the creditor number has not been communicated.",
+        "RES": "Correct the creditor number or conclude a new mandate if it is correct. Finally, it is advised to check with your bank or Sepa Direct Debit Expert whether all parameters in your instructions to the bank are correct."
+    },
+    {
+        "CODE": "CNOR",
+        "DESC": "Creditor Bank is not registered under this BIC as a Sepa direct debit bank",
+        "WHEN": "In practice you will not encounter this message as the bank will immediately give an error when uploading the direct debit file.",
+        "WHY": "Sometimes banks can participate indirectly in the Sepa Direct Debit System. In that case, the direct participant in the Sepa Direct Debit has not indicated the \"indirect\" participant.",
+        "RES": "Contact your bank."
+    },
+    {
+        "CODE": "DNOR",
+        "DESC": "Debtor Bank is not registered under this BIC in the Sepa direct debit system",
+        "WHEN": "The debtor bank is not registered under this BIC in the Sepa direct debit system.",
+        "WHY": "Debtor bank/ Creditor: The accessibility of the debtor bank was not checked when accepting or creating the files.",
+        "RES": "Ask the party that sent the error message to do a two-step verification to verify that the checks are correct.\nContact the debtor to agree on a different payment method and inform him that his bank does not support direct debits. When creating the mandate, use a tool (e.g. Twikey) that does this verification automatically. This way you avoid wasting time for both you and your customer."
+    },
+    {
+        "CODE": "FF01",
+        "DESC": "File format incomplete or invalid",
+        "WHEN": "The XML file is not filled in properly or is not correct.\nThere is a syntax error in the file.\nThe creditor bank or its intermediary bank did not perform an XSD check before submitting the file.",
+        "WHY": "Creditor / Debtor bank / intermediary party that supplies the files to the bank has not checked the import.\nThe package that creates the XML creates this error.",
+        "RES": "Restore the XML file and resubmit it to the bank."
+    },
+    {
+        "CODE": "MD01",
+        "DESC": "Mandate missing",
+        "WHEN": "For Core mandates :\n\nThe mandate has not been used for more than 36 months and the bank has cancelled it. Or a new registered mandate has not been used in the first 12 months (in case there is a pre-registration done with the bank (via Twikey)).\nThe mandate was cancelled by the debtor.\nDouble use of the unique mandate number\n\n- For B2B mandates:\n\nThe debtor has not yet registered the mandate at the bank.\nThe bank (employee) has registered the mandate incorrectly.\"",
+        "WHY": "The mandate does not exist yet.\nThe mandate no longer exists.",
+        "RES": "\"For CORE mandates: inform the debtor and have him sign a new mandate.\nFor B2B mandates: If you do not work with online B2B mandates yet, you will unfortunately have to send your customer back to the bank for registration. Please check whether your mandate number structure is \"human\". In practice, for example, it is not a good idea to use characters that are difficult to differentiate, such as: HALLO001. An error between a \"\"0\"\" and an \"\"O\"\" is easily made by the registering bank employee.\nFor both: do not try to conclude your mandate on paper, but digitally."
+    },
+    {
+        "CODE": "MD02",
+        "DESC": "Mandate data missing or incorrect",
+        "WHEN": "The mandate data in the mandate-related information are not identical to the data in the mandate (changes were not communicated).\nThe mandate data does not match the mandate information already provided.\nIn case of an amendment of the mandate: the original IBAN and the new IBAN are the same.",
+        "WHY": "The mandate was not modified in accordance with the EPC rules.\nThe modified information is not correct.",
+        "RES": "Twikey does not follow the EPC's advice in this case : sign a new mandate instead of trying to correct it. Not all banks process the changes in exactly the same way."
+    },
+    {
+        "CODE": "MD06",
+        "DESC": "Disputed authorized transaction\n(For SDD Core collections only)",
+        "WHEN": "Unconditional refund of a transaction (SDD Core - up to 8 weeks after the debit date).",
+        "WHY": "The customer exercised his unconditional right to a refund during 8 weeks.",
+        "RES": "Contact the debtor and find out why this payment was recalled. If it is clear that fraud has been committed by the end customer, it is best to avoid concluding mandates with this customer in the future."
+    },
+    {
+        "CODE": "MD07",
+        "DESC": "Debtor deceased",
+        "WHEN": "Debtor deceased.\n\nNote: This code cannot be used in certain SEPA countries for data protection reasons. In that case AC06 or MS03 can be used as an alternative.",
+        "WHY": "The debtor has (probably) died.",
+        "RES": "In this case the mandate is automatically suspended. Carefully contact the next of kin to check whether the contract - mandate should be transferred to someone else. Attention: our many years of experience with codes show that this information from the bank is NOT always 100% correct. Some caution is therefore indicated in this sensitive matter."
+    },
+    {
+        "CODE": "MS02",
+        "DESC": "Refusal by the debtor",
+        "WHEN": "Refusal by the debtor at pre-notification.",
+        "WHY": "The debtor who received the prenotification decided to refuse the collection.",
+        "RES": "Contact the debtor."
+    },
+    {
+        "CODE": "MS03",
+        "DESC": "Reason not specified",
+        "WHEN": "The bank uses this to report a failure when other codes cannot be used. This is for example the case when a national law (e.g. data protection law) does not allow the use of AC04, AM04, MD07, RR01, RR02, RR03 and RR04. In practice, MS03 will mainly mean that there is no money in the account for Belgian debtors. It is rarely used for another reason. In the Netherlands, most banks use the code AM04, which is the correct message to report that there is no money available.",
+        "WHY": "",
+        "RES": "It is advised to resubmit the collection at least once as this can always happen. And set up more advanced steps with automatic follow-up for the next collections."
+    },
+    {
+        "CODE": "RC01",
+        "DESC": "Bank identifier (BIC) incorrect",
+        "WHEN": "The BIC of the bank is not correct.",
+        "WHY": "The BIC of the debtor bank does not exist in the BIC database.\nThe BIC is not complete (BIC8 instead of BIC11) for non-SEPA EEA countries.",
+        "RES": "Contact the debtor for the correct BIC."
+    },
+    {
+        "CODE": "RR01",
+        "DESC": "Regulatory reason",
+        "WHEN": "Missing debtor account or identification.\nRegulatory reason.\nNote: This code cannot be used in certain SEPA countries for data protection reasons. MS03 can be used as an alternative.",
+        "WHY": "For the creditor bank, the debtor's IBAN is a mandatory item for the SDD collection.",
+        "RES": "Restore the SDD direct debit file to complete the debtor account information.\nContact the creditor bank."
+    },
+    {
+        "CODE": "RR02",
+        "DESC": "Debtor name and/or address mandatory for regulatory reasons is incomplete or missing",
+        "WHEN": "Missing debtor name.\nMissing address in case of non-European direct debits.\nNote: This code cannot be used in certain SEPA countries for data protection reasons. Alternatively, MS03 can be used.",
+        "WHY": "Creditor : for the creditor bank, the debtor name is a mandatory data for the SDD collection.",
+        "RES": "Restore the SDD direct debit file to complete the debtor name.\nContact the creditor bank."
+    },
+    {
+        "CODE": "RR03",
+        "DESC": "Creditor name and/or address mandatory for regulatory reasons is incomplete or missing",
+        "WHEN": "Missing creditor name (address is an optional field).\nNote : This code cannot be used in certain SEPA countries for data protection reasons. Alternatively, MS03 can be used.",
+        "WHY": "Creditor : The creditor name is a mandatory data in the transmission of collections.",
+        "RES": "Correct the batch and resubmit it.\nContact the bank in case the problem persists."
+    },
+    {
+        "CODE": "RR04",
+        "DESC": "Regulatory reason",
+        "WHEN": "Used for regulatory reasons other than RR01, RR02 or RR03.\n\nNote: This code cannot be used in certain SEPA countries for data protection reasons. MS03 can be used as an alternative.",
+        "WHY": "",
+        "RES": "Contact the creditor bank."
+    },
+    {
+        "CODE": "SL01",
+        "DESC": "Specific service offered by the debtor bank",
+        "WHEN": "The debtor uses the limits that his bank allows him to configure:\n\nBlocking of the creditor.\nLimitation of the amounts, e.g. for B2B direct debits.\nNumber of collections.\nOther services offered by the debtor bank.",
+        "WHY": "The debtor has configured limits during the conclusion of the mandate or afterwards.",
+        "RES": "Contact the debtor."
+    },
+    {
+        "CODE": "PY01",
+        "DESC": "Not routable",
+        "WHEN": "This can occur when the debtor's bank does not handle SDD's.",
+        "WHY": "",
+        "RES": "Contact Twikey."
+    }
+]

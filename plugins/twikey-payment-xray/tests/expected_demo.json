@@ -1,0 +1,93 @@
+{
+ "_about": "Expected results for the demo company, written from the spec in tests/make_demo.py (FAILURES and the transfer rules), as of October 31, 2026. Amounts: customer n pays EUR 400.50 + 25 x n a month.",
+ "as_of": "2026-10-31",
+ "intake": {
+  "statements": 12, "entries": 377, "parties": 40, "direct_debit_customers": 14, "payers": 26, "mandate_codes": 14,
+  "bank_credit_lines": 291, "collections_collected": 177, "failed_collections": 17, "debit_lines_skipped": 24,
+  "own_transfers_skipped": 0, "duplicates_removed": 0, "invalid_structured_communications": 2,
+  "other_references": 24,
+  "entries_per_file": {"file 1": 32, "file 2": 30, "file 3": 32, "file 4": 30, "file 5": 30, "file 6": 31,
+                       "file 7": 32, "file 8": 30, "file 9": 32, "file 10": 32, "file 11": 34, "file 12": 32}
+ },
+ "decode": {
+  "total": {"count": 17, "amount": 8508.5},
+  "by_code": {
+   "MS03": {"count": 7, "amount": 3378.5, "known": true},
+   "MD01": {"count": 2, "amount": 1151.0, "known": true},
+   "MS02": {"count": 2, "amount": 1051.0, "known": true},
+   "MD06": {"count": 2, "amount": 1026.0, "known": true},
+   "AM04": {"count": 2, "amount": 951.0, "known": true},
+   "AC04": {"count": 1, "amount": 450.5, "known": true},
+   "null": {"count": 1, "amount": 500.5, "known": false}
+  },
+  "top_code": "MS03",
+  "by_category": {
+   "new_attempt": {"count": 9, "amount": 4329.5},
+   "new_mandate": {"count": 1, "amount": 450.5},
+   "conversation": {"count": 6, "amount": 3228.0},
+   "unreadable": {"count": 1, "amount": 500.5}
+  },
+  "days_of_month": {
+   "5": {"failed": 17, "presented": 84, "months": 12, "rate_pct": 20.2, "moved_runs": 3, "qualifies": true},
+   "26": {"failed": 0, "presented": 84, "months": 12, "rate_pct": 0.0, "moved_runs": 4, "qualifies": true}
+  },
+  "days_of_month_overall": {"failed": 17, "presented": 168, "rate_pct": 10.1},
+  "failures_by_day": {"5": 12, "6": 1, "7": 4},
+  "repeat_customers": {"C002": 3, "C003": 4, "C004": 4, "C005": 4, "C007": 2},
+  "unknown_codes": [],
+  "direct_debit_customers_with_failures": ["C002", "C003", "C004", "C005", "C007"]
+ },
+ "payments": {
+  "credit_lines": {"count": 291, "amount": 309845.0},
+  "groups": {
+   "valid": {"count": 190, "amount": 182620.0},
+   "invalid": {"count": 2, "amount": 2276.0, "customers": ["C029", "C030"]},
+   "other": {"count": 24, "amount": 31512.0, "customers": ["C036", "C037"]},
+   "absent": {"count": 75, "amount": 93437.0,
+              "customers": ["C031", "C032", "C033", "C034", "C035", "C038", "C039", "C005", "C040"]}
+  },
+  "by_hand": {"count": 77, "amount": 95713.0, "share_pct": 26.5, "per_month": 6.4}
+ },
+ "steps": {
+  "items": {
+   "book_by_hand": {"count": 77, "steps_total": 231, "months": 12, "per_month": 6.4},
+   "failed_new_attempt": {"count": 9, "steps_total": 36, "months": 12, "per_month": 0.8},
+   "failed_conversation": {"count": 6, "steps_total": 24, "months": 12, "per_month": 0.5},
+   "failed_new_mandate": {"count": 1, "steps_total": 5, "months": 12, "per_month": 0.1},
+   "failed_unknown": {"count": 1, "steps_total": 2, "months": 12, "per_month": 0.1},
+   "failed_own_setup": {"count": 0, "steps_total": 0, "months": 12, "per_month": 0.0}
+  },
+  "examples": {
+   "failed_new_attempt": ["C002", "C003", "C004", "C005"],
+   "failed_conversation": ["C004", "C005", "C007"]
+  },
+  "total_items": 94, "total_steps": 298, "per_month_total": 7.8, "per_month_steps_total": 24.8
+ },
+ "month": {
+  "counts": {"new_attempts": 2, "mails": 4},
+  "closed": {"collected_later": 2, "paid_by_transfer": 1},
+  "new_attempts": [
+   {"customer": "C003", "mandate": "M003", "amount": 475.5, "failure_date": "2026-10-05", "attempts": 1,
+    "reason_code": "AM04", "new_date": "2026-11-26", "mail_reason": "new_attempt"},
+   {"customer": "C005", "mandate": "M005", "amount": 525.5, "failure_date": "2026-10-05", "attempts": 1,
+    "reason_code": "MS03", "new_date": "2026-11-26", "mail_reason": "new_attempt"}
+  ],
+  "suggested_day": {"day": 26, "rate_pct": 0.0, "months": 12, "failed": 0, "presented": 84, "date": "2026-11-26",
+                    "moved_to_working_day": false, "overall_rate_pct": 10.1, "qualifying_days": 2},
+  "mails": [
+   {"customer": "C003", "reason": "new_attempt", "template": "new_attempt", "amount": 475.5},
+   {"customer": "C004", "reason": "conversation", "template": "conversation", "amount": 500.5},
+   {"customer": "C005", "reason": "new_attempt", "template": "new_attempt_neutral", "amount": 525.5},
+   {"customer": "C007", "reason": "b2b_register", "template": "b2b_register", "amount": 1151.0}
+  ],
+  "names": {"C003": "SLAGERIJ PROEFMANS BV", "C004": "CAFÉ DEMO VOF", "C005": "BOULANGERIE EXEMPLE SRL",
+            "C007": "TRANSPORT DEMO NV", "M007": "B2B-GF-0007"}
+ },
+ "golive": {
+  "direct_debit_customers": 14, "core_customers": 12, "b2b_customers": 2, "mandates": 14,
+  "collections_per_month": 14.0, "failed_per_month": 1.4, "failure_rate_pct": 10.1, "payers_by_transfer": 26,
+  "transfers_per_month": 24.2, "by_hand_per_month": 6.4,
+  "tools": {"Exact Online": "Exact", "Odoo": "Odoo", "Yuki": null}
+ },
+ "report": {"C001": "BAKKERIJ VOORBEELD BV", "M004": "CORE-GF-0004"}
+}
